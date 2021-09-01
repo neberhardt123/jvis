@@ -1,0 +1,27 @@
+{% if request.user.is_authenticated %}
+<p>{{request.user}}</p>
+<a href="{% url 'logout' %}">Logout</a>
+
+{% else %}
+<a href="{% url 'login' %}">Login</a>
+{% endif %}
+
+<hr>
+<h1>Boxes</h1>
+<table>
+    <tr>
+        <th>Item</th>
+        <th></th>
+    </tr>
+    {% for box in boxes%}
+    <tr>
+        <td>{{box.ip}}</td>
+        <td><a href="{% url 'box-detail' box.id %}">View</a></td>
+        <td><a href="{% url 'box-update' box.id %}">Edit</a></td>
+    </tr>
+    {% empty %}
+    <h3>No Boxes yet</h3>
+    {% endfor %}
+
+
+</table>
