@@ -3,14 +3,19 @@ from django.shortcuts import render, redirect
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, FormView
+from django.views import View
+
 from django.urls import reverse_lazy
 
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import UserCreationForm
+from django.http import HttpResponseRedirect
 from django.contrib.auth import login
-
+from django import http
+from create_box import handle_uploaded_box
 from .models import Box
+from .forms import UploadFileForm 
 
 class CustomLoginView(LoginView):
     template_name = 'base/login.html'
@@ -61,3 +66,25 @@ class BoxUpdate(LoginRequiredMixin, UpdateView):
     fields = ['user', 'comments', 'active']
     context_object_name='box_form'
     success_url = reverse_lazy('boxes')
+
+#CHANGE THIS TO CLASS BASED
+'''
+def upload_file(request):
+    if request.method == 'POST':
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            handle_uploaded_box(request.FILES['file'])
+            return HttpResponseRedirect('boxes')
+    else:
+        form = UploadFileForm()
+    return render(request, 'base/upload.html', {'form': form})
+'''
+class BoxUpload(View):
+    def post(self, request, *args, **kwargs):
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            handle_uploaded_box(request.FILES['file'])
+            return redirect('boxes')
+    def get(self, request, *args, **kwargs):
+        form = UploadFileForm()
+        return render(request, 'base/upload.html', {'form': form})

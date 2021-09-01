@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models.fields import IPAddressField
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
+from django.forms.models import ModelForm
 
 class Box(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
@@ -17,5 +18,4 @@ class Box(models.Model):
 
     class Meta:
         ordering = ['up']
-
 
