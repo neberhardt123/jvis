@@ -1,3 +1,4 @@
+
 from django.urls import path
 from . import views
 from .views import BoxUpdate, Boxes, BoxDetail, BoxCreate, BoxUpdate, CustomLoginView, RegisterPage, BoxUpload
@@ -13,7 +14,7 @@ urlpatterns = [
     path('box/<int:pk>', BoxDetail.as_view(), name="box-detail"),
     path('create-box/', BoxCreate.as_view(), name="box-create"),
     path('update-box/<int:pk>', BoxUpdate.as_view(), name="box-update"),
-    path('upload/', BoxUpload.as_view(), name="box-upload")
+    path('upload/', BoxUpload.as_view(), name="box-upload"),
 ]
 
 urlpatterns += static(settings.NMAP_URL, document_root=settings.NMAP_ROOT)

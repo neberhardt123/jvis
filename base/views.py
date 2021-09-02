@@ -14,8 +14,10 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth import login
 from django import http
 from create_box import handle_uploaded_box
-from .models import Box
+from .models import Box, BoxService
 from .forms import UploadFileForm 
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 
 class CustomLoginView(LoginView):
     template_name = 'base/login.html'
@@ -54,6 +56,16 @@ class BoxDetail(LoginRequiredMixin, DetailView):
     model = Box
     context_object_name = 'box'
     template_name='base/box.html'
+    '''
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['service'] = BoxService.objects.filter(cBox='45.33.32.156')
+        return context
+    '''
+class ServiceDetail(DetailView):
+    model = BoxService
+    context_object_name='service'
+    template_name='base/box_service.html'
 
 class BoxCreate(LoginRequiredMixin, CreateView):
     model = Box
@@ -79,12 +91,19 @@ def upload_file(request):
         form = UploadFileForm()
     return render(request, 'base/upload.html', {'form': form})
 '''
+
+@method_decorator(csrf_exempt, name="dispatch")
 class BoxUpload(View):
     def post(self, request, *args, **kwargs):
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             handle_uploaded_box(request.FILES['file'])
+        #handle_uploaded_box(request.POST)
             return redirect('boxes')
+        else:
+            print(request.FILES)
+            handle_uploaded_box(request.FILES)
+                
     def get(self, request, *args, **kwargs):
         form = UploadFileForm()
         return render(request, 'base/upload.html', {'form': form})
