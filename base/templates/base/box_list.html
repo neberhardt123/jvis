@@ -19,6 +19,9 @@
         <td><a href="{% url 'box-detail' box.id %}">View</a></td>
         <td><a href="{% url 'box-update' box.id %}">Edit</a></td>
     </tr>
+    <tr>
+        <td>{{box.boxservice_set.all}}</td>
+    </tr>
     {% empty %}
     <h3>No Boxes yet</h3>
     {% endfor %}

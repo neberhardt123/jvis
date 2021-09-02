@@ -7,9 +7,8 @@ from django.forms.models import ModelForm
 class Box(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     ip = models.GenericIPAddressField()
-    version = models.CharField(max_length=200, blank=True)
     hostname = models.CharField(max_length=200, blank=True)
-    up = models.BooleanField(default=False, blank=True)
+    state = models.CharField(max_length=200, blank=True)
     comments = models.TextField(null=True, blank=True)
     active = models.BooleanField(default=False)
 
@@ -17,11 +16,15 @@ class Box(models.Model):
         return self.ip
 
     class Meta:
-        ordering = ['up']
+        ordering = ['state']
 
 class BoxService(models.Model):
     port = models.CharField(max_length=200, blank=True)
-    extra = models.TextField(null=True, blank=True)
+    protocol = models.CharField(max_length=200, blank=True)
+    state = models.TextField(null=True, blank=True)
+    name = models.TextField(null=True, blank=True)
+    version = models.TextField(null=True, blank=True)
+    os = models.TextField(null=True, blank=True)
     cBox = models.ForeignKey(Box, on_delete=models.CASCADE)
 
     def __str__ (self):

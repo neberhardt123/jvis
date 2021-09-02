@@ -23,7 +23,7 @@ if __name__ == '__main__':
         os.remove('temp.xml')
     except:
         pass
-    os.system("nmap -sV -oX temp.xml {}".format(args.victim_addr))
+    os.system("nmap -p 22 -sV -oX temp.xml {}".format(args.victim_addr))
     try:
         with open('temp.xml', 'rb') as f:
             r = requests.post('{}:{}/upload/'.format(args.target_ip,args.target_port), files={'file': f})

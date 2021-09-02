@@ -47,11 +47,12 @@ class RegisterPage(FormView):
 class Boxes(LoginRequiredMixin, ListView):
     model = Box
     context_object_name = 'boxes'
-    '''
+'''
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context[]
-    '''
+        context['openports'] = BoxService.objects.filter(state='open')
+        return context
+'''
 class BoxDetail(LoginRequiredMixin, DetailView):
     model = Box
     context_object_name = 'box'
@@ -62,10 +63,7 @@ class BoxDetail(LoginRequiredMixin, DetailView):
         context['service'] = BoxService.objects.filter(cBox='45.33.32.156')
         return context
     '''
-class ServiceDetail(DetailView):
-    model = BoxService
-    context_object_name='service'
-    template_name='base/box_service.html'
+
 
 class BoxCreate(LoginRequiredMixin, CreateView):
     model = Box
