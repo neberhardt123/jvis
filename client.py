@@ -28,6 +28,7 @@ if __name__ == '__main__':
     #os.system("nmap -v -T5 {} -p 21,22,23,25,110,139,443,445,3000,3389,8080 | grep Discovered | awk '{print $6}' > second.txt")
     #os.system("sort first.txt second.txt | uniq > initial.txt")
     os.system("nmap -T5 -O --osscan-limit -sV -iL first.txt -oX temp.xml {}".format(args.victim_addr))
+    #os.system("nmap -sV -oX temp.xml {}".format(args.victim_addr))
     try:
         with open('temp.xml', 'rb') as f:
             r = requests.post('{}:{}/upload/'.format(args.target_ip,args.target_port), files={'file': f})

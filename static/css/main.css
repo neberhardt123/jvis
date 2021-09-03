@@ -1,11 +1,13 @@
-body{margin-top:20px;
+body{margin-top:20px !important;
     background:#eee;
     }
     
 .btn {
     margin-bottom: 5px;
 }
-
+.container {
+    max-width:2000px !important;
+}
 .grid {
     position: relative;
     width: 100%;
@@ -50,8 +52,22 @@ body{margin-top:20px;
     line-height: 50px;
 }
 
+.col-md-3 {
+    max-width:20% !important;
+}
+
 .search #price1,
 .search #price2 {
     display: inline;
     font-weight: 600;
+}
+
+.abut {
+    color:white;
+    text-decoration:none;
+}
+
+.abut:hover {
+    color:white;
+    text-decoration:none;
 }

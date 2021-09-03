@@ -23,54 +23,11 @@
     <div class="grid search">
       <div class="grid-body">
         <div class="row">
-          <!-- BEGIN FILTERS -->
-          <div class="col-md-3">
-            <h2 class="grid-title"><i class="fa fa-filter"></i> Filters</h2>
-            <hr>
-            
-            <!-- BEGIN FILTER BY CATEGORY -->
-            <h4>By category:</h4>
-            <div class="checkbox">
-              <label><input type="checkbox" class="icheck"> Application</label>
-            </div>
-            <div class="checkbox">
-              <label><input type="checkbox" class="icheck"> Design</label>
-            </div>
-            <div class="checkbox">
-              <label><input type="checkbox" class="icheck"> Desktop</label>
-            </div>
-            <div class="checkbox">
-              <label><input type="checkbox" class="icheck"> Management</label>
-            </div>
-            <div class="checkbox">
-              <label><input type="checkbox" class="icheck"> Mobile</label>
-            </div>
-            <!-- END FILTER BY CATEGORY -->
-            
-
-            
-            <div class="padding"></div>
-            
-            <!-- BEGIN FILTER BY PRICE -->
-            <h4>By price:</h4>
-            Between <div id="price1">$300</div> to <div id="price2">$800</div>
-            <div class="slider-primary">
-              <div class="slider slider-horizontal" style="width: 152px;"><div class="slider-track"><div class="slider-selection" style="left: 30%; width: 50%;"></div><div class="slider-handle round" style="left: 30%;"></div><div class="slider-handle round" style="left: 80%;"></div></div><div class="tooltip top hide" style="top: -30px; left: 50.1px;"><div class="tooltip-arrow"></div><div class="tooltip-inner">300 : 800</div></div><input type="text" class="slider" value="" data-slider-min="0" data-slider-max="1000" data-slider-step="1" data-slider-value="[300,800]" data-slider-tooltip="hide"></div>
-            </div>
-            <!-- END FILTER BY PRICE -->
-          </div>
-          <!-- END FILTERS -->
           <!-- BEGIN RESULT -->
           <div class="col-md-9">
             <h2>Le BonBon Network</h2>
             <hr>
-            <!-- BEGIN SEARCH INPUT 
-                <form method="GET">
-        <input type="text" placeholder="Search for IP or host name" name="search" value="{{search_input}}">
-        <input type="submit" value="Search">
-    </form>
-            
-            -->
+
             <div class="input-group">
                 <form method="GET" class="input-group mb-3">
                     <input type="text" class="form-control" value="{{search_input}}" method="GET" name="search" placeholder="Search by IP or Hostname">
@@ -86,44 +43,58 @@
             
             <div class="row">
               <!-- BEGIN ORDER RESULT -->
-              <div class="col-sm-6">
-                <div class="btn-group">
-                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                    Order by <span class="caret"></span>
-                  </button>
-                  <ul class="dropdown-menu" role="menu">
-                    <li><a href="#">Name</a></li>
-                    <li><a href="#">Date</a></li>
-                    <li><a href="#">View</a></li>
-                    <li><a href="#">Rating</a></li>
-                  </ul>
-                </div>
-              </div>
+
               <!-- END ORDER RESULT -->
-              
-              <div class="col-md-6 text-right">
-                <div class="btn-group">
-                  <button type="button" class="btn btn-default active"><i class="fa fa-list"></i></button>
-                  <button type="button" class="btn btn-default"><i class="fa fa-th"></i></button>
-                </div>
-              </div>
+
             </div>
             
             <!-- BEGIN TABLE RESULT -->
             <div id="accordion">
                 {% for box in boxes%}
                 <div class="card">
-                    <div class="card-header" id="heading{{box.id}}">
-                        <h5 class="mb-0">
-                            <button class="btn btn-link" data-toggle="collapse" data-target="#collapse{{box.id}}" aria-expanded="false" aria-controls="collapse{{box.id}}">
-                            {{box.hostname}} | {{box.ip}}
+                    <div class="card-header row" id="heading{{box.id}}" style="margin:0">
+                            <div style="margin:auto">
+                            <button class="btn btn-link close" data-toggle="collapse" data-target="#collapse{{box.id}}" aria-expanded="false" aria-controls="collapse{{box.id}}" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
                             </button>
-                        </h5>
+                            </div>
+                            <div class ="col" style="margin:auto">
+                            <h5>
+                                {{box.hostname}} | {{box.ip}}
+                            </h5>
+                            </div>
+                            <div class="col-md-1">
+                            <button type="button" class="btn btn-info"><a class="abut" href="{% url 'box-update' box.id %}">Edit</a></button>
+                            </div>
                     </div>
 
                     <div id="collapse{{box.id}}" class="collapse show" aria-labelledby="heading{{box.id}}" data-parent="#accordion">
                         <div class="card-body">
-                            
+                            <h4>OS: <b>{{box.os}}</b></h5>
+                            <h4>Services </h5>
+                            <hr />
+                            <table class="table">
+                                <thead class="thead-light">
+                                    <tr>
+                                    <th scope="col">Port</th>
+                                    <th scope="col">Protocol</th>
+                                    <th scope="col">State</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Version</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for b in box.boxservice_set.all %}
+                                    <tr>
+                                    <th scope="row">{{b.port}}</th>
+                                    <td>{{b.protocol}}</td>
+                                    <td>{{b.state}}</td>
+                                    <td>{{b.name}}</td>
+                                    <td>{{b.version}}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -133,17 +104,6 @@
             </div>
             <!-- END TABLE RESULT -->
             
-            <!-- BEGIN PAGINATION -->
-            <ul class="pagination">
-              <li class="disabled"><a href="#">«</a></li>
-              <li class="active"><a href="#">1</a></li>
-              <li><a href="#">2</a></li>
-              <li><a href="#">3</a></li>
-              <li><a href="#">4</a></li>
-              <li><a href="#">5</a></li>
-              <li><a href="#">»</a></li>
-            </ul>
-            <!-- END PAGINATION -->
           </div>
           <!-- END RESULT -->
         </div>
