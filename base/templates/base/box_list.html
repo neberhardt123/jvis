@@ -51,21 +51,37 @@
             <!-- BEGIN TABLE RESULT -->
             <div id="accordion">
                 {% for box in boxes%}
+                <style type="text/css">
+                {% if box.active %}
+                #heading{{box.id}} {
+                    background:#38b838; !important;
+                }
+                {% else %}
+                #heading{{box.id}} {
+                    background:hsl(0, 82%, 57%) !important;
+                }
+                {%endif%}
+                </style>
                 <div class="card">
-                    <div class="card-header row" id="heading{{box.id}}" style="margin:0">
-                            <div style="margin:auto">
-                            <button class="btn btn-link close" data-toggle="collapse" data-target="#collapse{{box.id}}" aria-expanded="false" aria-controls="collapse{{box.id}}" aria-label="Close">
+                    <div class="card-header row" id="heading{{box.id}}" style="margin:0;padding:0;">
+                        <div style="margin:auto" class="col-1">
+                            <button style="margin:auto;float:left;" class="btn btn-link close" data-toggle="collapse" data-target="#collapse{{box.id}}" aria-expanded="false" aria-controls="collapse{{box.id}}" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
+                        </div>
+                        <div class="col" style="margin:auto">
+                            <button class="btn btn-link close col" data-toggle="collapse" data-target="#collapse{{box.id}}" aria-expanded="false" aria-controls="collapse{{box.id}}" aria-label="Close" style="margin:auto;height:100%;width:100%;display:block;padding:20px;">
+                                <h5 style="text-shadow:none;">
+                                    {{box.hostname}} | {{box.ip}}
+                                </h5>
                             </div>
-                            <div class ="col" style="margin:auto">
-                            <h5>
-                                {{box.hostname}} | {{box.ip}}
-                            </h5>
-                            </div>
-                            <div class="col-md-1">
+                            </button>
+                        <div class="col-md-2" style="margin:auto;">
+                            <h6>Assigned to: <b style="color:white">{{box.user}}</b></h6>
+                        </div>
+                            <div class="col-md-1" style="margin:auto;">
                             <button type="button" class="btn btn-info"><a class="abut" href="{% url 'box-update' box.id %}">Edit</a></button>
-                            </div>
+                        </div>
                     </div>
 
                     <div id="collapse{{box.id}}" class="collapse show" aria-labelledby="heading{{box.id}}" data-parent="#accordion">
@@ -95,6 +111,9 @@
                                 {% endfor %}
                                 </tbody>
                             </table>
+                             <hr>
+                            <h4>Comments:</h4>
+                            {{box.comments}}
                         </div>
                     </div>
                 </div>
@@ -102,6 +121,7 @@
                 <h3>No Boxes yet</h3>
                 {% endfor %}
             </div>
+
             <!-- END TABLE RESULT -->
             
           </div>
