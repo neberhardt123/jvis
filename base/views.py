@@ -4,7 +4,7 @@ from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, FormView
 from django.views import View
-
+from django.db.models import Q
 from django.urls import reverse_lazy
 
 from django.contrib.auth.views import LoginView
@@ -47,12 +47,17 @@ class RegisterPage(FormView):
 class Boxes(LoginRequiredMixin, ListView):
     model = Box
     context_object_name = 'boxes'
-'''
+
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['openports'] = BoxService.objects.filter(state='open')
+        search_input = self.request.GET.get('search') or ''
+        if search_input:
+            #context['boxes'] = context['boxes'].filter(boxservice__port=search_input) 
+            context['boxes'] = context['boxes'].filter(Q(ip__icontains=search_input) | Q(hostname__icontains=search_input)) 
+        context['search_input'] = search_input
         return context
-'''
+
 class BoxDetail(LoginRequiredMixin, DetailView):
     model = Box
     context_object_name = 'box'

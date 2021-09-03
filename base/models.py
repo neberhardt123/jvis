@@ -11,7 +11,8 @@ class Box(models.Model):
     state = models.CharField(max_length=200, blank=True)
     comments = models.TextField(null=True, blank=True)
     active = models.BooleanField(default=False)
-
+    os = models.CharField(max_length=200, blank=True)
+    
     def __str__(self):
         return self.ip
 
@@ -24,7 +25,6 @@ class BoxService(models.Model):
     state = models.TextField(null=True, blank=True)
     name = models.TextField(null=True, blank=True)
     version = models.TextField(null=True, blank=True)
-    os = models.TextField(null=True, blank=True)
     cBox = models.ForeignKey(Box, on_delete=models.CASCADE)
 
     def __str__ (self):

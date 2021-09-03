@@ -1,6 +1,9 @@
+{% extends 'base/main.html' %}
+{% block content %}
 <a href="{% url 'boxes' %}">Go Back</a>
 <h1>Box: {{box}}</h1>
 <h1>Host Name: {{box.hostname}}</h1>
+<h2>OS: {{box.os}}</h2>
 <h2>Services:</h2>
 <table>
     <thead>
@@ -10,7 +13,6 @@
             <th>State</th>
             <th>Name</th>
             <th>Version</th>
-            <th>OS</th>
         </tr>
     </thead>
     <tbody>
@@ -21,10 +23,10 @@
             <td>{{b.state}}</td>
             <td>{{b.name}}</td>
             <td>{{b.version}}</td>
-            <td>{{b.os}}</td>
         </tr>
     {% endfor %}
     </tbody>
 </table>
 <p>Active: {{box.active}}</p>
 <p>Comments: {{box.comments}}</p>
+{% endblock content %}
