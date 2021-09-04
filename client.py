@@ -3,11 +3,12 @@ import sys
 import os
 import requests
 
-
+#LOOP
+#ADD LESS COMPLEX SCAN
 
 if __name__ == '__main__':
     example = 'Examples:\n\n'
-    example += "$ python3 nathanvis.py -i 'http://192.168.50.3' -p 8000 -s '192.168.50.0/24' "
+    example += "$ python3 nathanvis.py -i http://192.168.50.3 -p 8000 -s 192.168.50.0/24 "
     parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter, epilog=example)
     sgroup = parser.add_argument_group("Main Arguments")
     sgroup.add_argument("-i", metavar="[IP]", dest='target_ip', default=False, type=str, help="IP of collab server", required=True)

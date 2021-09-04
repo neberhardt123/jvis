@@ -25,7 +25,7 @@
         <div class="row">
           <!-- BEGIN RESULT -->
           <div class="col-md-9">
-            <h2>Le BonBon Network</h2>
+            <h2 id="counter" class="{{count}}">Le BonBon Network ({{count}})</h2>
             <hr>
 
             <div class="input-group">
@@ -47,7 +47,49 @@
               <!-- END ORDER RESULT -->
 
             </div>
-            
+            {% block javascript %}
+
+            <script type="text/javascript">
+                setInterval("refresh()", 10000);
+                //todo set csrf token
+                /**
+                var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+
+                function csrfSafeMethod(method) {
+                    // these HTTP methods do not require CSRF protection
+                    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+                }
+
+                $.ajaxSetup({
+                    beforeSend: function (xhr, settings) {
+                        // if not safe, set csrftoken
+                        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                        }
+                    }
+                });
+                **/
+                function refresh() {
+                    //
+                    var count2 = $("#counter").attr("class")
+                    $.ajax({
+                        url: document.URL,
+                        type: 'post',
+                        dataType: 'json',
+                        contentType: 'application/json',
+                        data: JSON.stringify(count2),
+                        //FIX WHY ITS NOT REFRESHING PAGE
+                        success: function(response) {
+                            $('#accordion').load(document.URL + ' #accordion');
+                        },
+
+                        error: function(response) {
+
+                        }
+                    });
+                }
+            </script>
+            {%endblock javascript%}
             <!-- BEGIN TABLE RESULT -->
             <div id="accordion">
                 {% for box in boxes%}
@@ -58,12 +100,14 @@
                 }
                 {% else %}
                 #heading{{box.id}} {
-                    background:hsl(0, 82%, 57%) !important;
+                    background:#f39c12 !important;
                 }
+                
                 {%endif%}
                 </style>
                 <div class="card">
                     <div class="card-header row" id="heading{{box.id}}" style="margin:0;padding:0;">
+                        
                         <div style="margin:auto" class="col-1">
                             <button style="margin:auto;float:left;" class="btn btn-link close" data-toggle="collapse" data-target="#collapse{{box.id}}" aria-expanded="false" aria-controls="collapse{{box.id}}" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
@@ -74,13 +118,14 @@
                                 <h5 style="text-shadow:none;">
                                     {{box.hostname}} | {{box.ip}}
                                 </h5>
-                            </div>
                             </button>
+                        </div>
+
                         <div class="col-md-2" style="margin:auto;">
-                            <h6>Assigned to: <b style="color:white">{{box.user}}</b></h6>
+                            <h6 style="color:black">Assigned to: <b style="color:white">{{box.user}}</b></h6>
                         </div>
                             <div class="col-md-1" style="margin:auto;">
-                            <button type="button" class="btn btn-info"><a class="abut" href="{% url 'box-update' box.id %}">Edit</a></button>
+                            <a class="abut" href="{% url 'box-update' box.id %}"><button type="button" class="btn btn-info">Edit</button></a>
                         </div>
                     </div>
 

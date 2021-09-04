@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 def handle_uploaded_box(f):
     
     #add validation
+    b = None
     #update already existing boxes
     try:
         soup = BeautifulSoup(f, "xml")
@@ -31,10 +32,27 @@ def handle_uploaded_box(f):
                 host_state = host.status.get('state')
             except:
                 host_state = "N/A"
-            b = Box(ip=address, hostname=host_name, state=host_state, os=os_fam)
-            b.save()
-            ports = soup.find_all('port')
-            services = soup.find_all('service')
+            try:
+                dupe = Box.objects.filter(ip=address)
+            except:
+                dupe = None
+
+            if dupe:
+                dupe.update(ip=address, hostname=host_name, state=host_state, os=os_fam)
+                for d in dupe:
+                    d.boxservice_set.all().delete()
+                    d.save()
+            else:
+                b = Box(ip=address, hostname=host_name, state=host_state, os=os_fam)
+                b.save()
+            try:
+                ports = soup.find_all('port')
+            except:
+                ports = None
+            try:
+                services = soup.find_all('service')
+            except:
+                services = None
 
             if ports:
                 for p, s in zip(ports, services):
@@ -66,8 +84,14 @@ def handle_uploaded_box(f):
                         service_pv_combined = service_version + service_product
                     else:
                         service_pv_combined = "N/A"
-                    bs = BoxService(port=service_port, protocol=service_protocol, state=service_state, name=service_name, version=service_pv_combined, cBox=b)
-                    bs.save()
+                    if dupe:
+                        for d in dupe:
+                            #get all bs for box?
+                            bs = BoxService (port=service_port, protocol=service_protocol, state=service_state, name=service_name, version=service_pv_combined, cBox=d)
+                            bs.save()
+                    else:
+                        bs = BoxService(port=service_port, protocol=service_protocol, state=service_state, name=service_name, version=service_pv_combined, cBox=b)
+                        bs.save()
     return
 
     #b = Box(ip="192.168.5.140", comments="test box!")

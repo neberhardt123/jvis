@@ -6,7 +6,8 @@ from django.views.generic.edit import CreateView, UpdateView, FormView
 from django.views import View
 from django.db.models import Q
 from django.urls import reverse_lazy
-
+import asyncio
+import json
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import UserCreationForm
@@ -17,7 +18,8 @@ from create_box import handle_uploaded_box
 from .models import Box, BoxService
 from .forms import UploadFileForm 
 from django.views.decorators.csrf import csrf_exempt
-from django.utils.decorators import method_decorator
+from django.utils.decorators import classonlymethod, method_decorator
+from django.http import JsonResponse
 
 class CustomLoginView(LoginView):
     template_name = 'base/login.html'
@@ -44,6 +46,7 @@ class RegisterPage(FormView):
             return redirect('boxes')
         return super(RegisterPage, self).get(*args, **kwargs)
 
+@method_decorator(csrf_exempt, name="dispatch")
 class Boxes(LoginRequiredMixin, ListView):
     model = Box
     context_object_name = 'boxes'
@@ -56,7 +59,23 @@ class Boxes(LoginRequiredMixin, ListView):
             #context['boxes'] = context['boxes'].filter(boxservice__port=search_input) 
             context['boxes'] = context['boxes'].filter(Q(ip__icontains=search_input) | Q(hostname__icontains=search_input)) 
         context['search_input'] = search_input
+        context['count'] = context['boxes'].count()
         return context
+
+    #PASS NEW DATA
+    def post(self, *args, **kwargs):
+        if self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            #print(self.request.POST)
+            body_unicode = self.request.body.decode('utf-8')
+            body = json.loads(body_unicode)
+            official_count = Box.objects.count()
+            if int(body) is int(official_count):
+                return JsonResponse({"test":"test"}, status=400)
+            else:
+                return JsonResponse({"test":"test"}, status=200)
+            #data_count = body['count']
+            #print(data_count)
+
 
 class BoxDetail(LoginRequiredMixin, DetailView):
     model = Box
