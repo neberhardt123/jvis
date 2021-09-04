@@ -18,15 +18,15 @@ def handle_uploaded_box(f):
         for host in hosts:
             print(host)
             try:
-                address = soup.find('address')['addr']
+                address = host.address.get('addr')
             except:
                 address = "N/A"
             try:
-                host_name = soup.find('hostname')['name']
+                host_name = host.hostname.get('name')
             except:
                 host_name = "N/A"
             try:
-                os_fam = soup.find('osclass')['osfamily']
+                os_fam = host.osclass.get('osfamily')
             except:
                 os_fam = "N/A"
             try:
