@@ -16,6 +16,7 @@ def handle_uploaded_box(f):
         return
     if hosts:
         for host in hosts:
+            print(host)
             try:
                 address = soup.find('address')['addr']
             except:
@@ -44,6 +45,7 @@ def handle_uploaded_box(f):
                     d.save()
             else:
                 b = Box(ip=address, hostname=host_name, state=host_state, os=os_fam)
+                print("success")
                 b.save()
             try:
                 ports = soup.find_all('port')
