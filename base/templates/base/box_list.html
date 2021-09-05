@@ -25,7 +25,7 @@
         <div class="row">
           <!-- BEGIN RESULT -->
           <div class="col-md-9">
-            <h2 id="counter" class="{{count}}">Le BonBon Network ({{count}})</h2>
+            <h2 id="counter">Le BonBon Network (Machines: {{count}})</h2>
             <hr>
 
             <div class="input-group">
@@ -47,10 +47,11 @@
               <!-- END ORDER RESULT -->
 
             </div>
+
             {% block javascript %}
 
             <script type="text/javascript">
-                setInterval("refresh()", 10000);
+                setInterval("refresh()", 5000);
                 //todo set csrf token
                 /**
                 var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
@@ -70,17 +71,20 @@
                 });
                 **/
                 function refresh() {
-                    //
-                    var count2 = $("#counter").attr("class")
+                    var collapse = $("div.show")[0];
+                    var aid = $("div#accordion").find(collapse).attr("id");
+                    //alert(JSON.stringify(aid));
                     $.ajax({
                         url: document.URL,
                         type: 'post',
                         dataType: 'json',
                         contentType: 'application/json',
-                        data: JSON.stringify(count2),
+                        data: JSON.stringify({"stat": aid}),
                         //FIX WHY ITS NOT REFRESHING PAGE
                         success: function(response) {
+                            var resp = JSON.parse(response);
                             $('#accordion').load(document.URL + ' #accordion');
+                            $('#counter').load(document.URL + ' #counter');
                         },
 
                         error: function(response) {
@@ -94,15 +98,21 @@
             <div id="accordion">
                 {% for box in boxes%}
                 <style type="text/css">
-                {% if box.active %}
+                {% if box.pwned %}
                 #heading{{box.id}} {
                     background:#38b838; !important;
                 }
-                {% else %}
+                {% elif box.active %}
                 #heading{{box.id}} {
                     background:#f39c12 !important;
                 }
-                
+                {% else %}
+                #heading{{box.id}} {
+                    background:rgb(230, 230, 230)  !important;
+                }
+                #assignee {
+                    color:black !important;
+                }
                 {%endif%}
                 </style>
                 <div class="card">
@@ -122,15 +132,14 @@
                         </div>
 
                         <div class="col-md-2" style="margin:auto;">
-                            <h6 style="color:black">Assigned to: <b style="color:white">{{box.user}}</b></h6>
+                            <h6 style="color:black">Assigned to: <b id="assignee" style="color:white; font-size:14; ">{{box.user}}</b></h6>
                         </div>
                             <div class="col-md-1" style="margin:auto;">
                             <a class="abut" href="{% url 'box-update' box.id %}"><button type="button" class="btn btn-info">Edit</button></a>
                         </div>
                     </div>
-
-                    <div id="collapse{{box.id}}" class="collapse show" aria-labelledby="heading{{box.id}}" data-parent="#accordion">
-                        <div class="card-body">
+                    <div id="collapse{{box.id}}" class="collapse" aria-labelledby="heading{{box.id}}" data-parent="#accordion">
+                        <div class="card-body table-responsive">
                             <h4>OS: <b>{{box.os}}</b></h5>
                             <h4>Services </h5>
                             <hr />
@@ -142,6 +151,7 @@
                                     <th scope="col">State</th>
                                     <th scope="col">Name</th>
                                     <th scope="col">Version</th>
+                                    <th scope="col">Script Output</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -152,6 +162,7 @@
                                     <td>{{b.state}}</td>
                                     <td>{{b.name}}</td>
                                     <td>{{b.version}}</td>
+                                    <td>{{b.script}}</td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>

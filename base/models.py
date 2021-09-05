@@ -11,21 +11,28 @@ class Box(models.Model):
     state = models.CharField(max_length=200, blank=True)
     comments = models.TextField(null=True, blank=True)
     active = models.BooleanField(default=False)
+    pwned = models.BooleanField(default=False)
     os = models.CharField(max_length=200, blank=True)
-    
+    new = models.BooleanField(default=True)
+
     def __str__(self):
         return self.ip
 
     class Meta:
-        ordering = ['state']
+        ordering = ['ip']
 
 class BoxService(models.Model):
-    port = models.CharField(max_length=200, blank=True)
+    port = models.IntegerField(blank=True)
     protocol = models.CharField(max_length=200, blank=True)
     state = models.TextField(null=True, blank=True)
     name = models.TextField(null=True, blank=True)
     version = models.TextField(null=True, blank=True)
+    script = models.TextField(null=True,blank=True)
+    new = models.BooleanField(default=True)
     cBox = models.ForeignKey(Box, on_delete=models.CASCADE)
 
     def __str__ (self):
-        return self.port
+        return str(self.port)
+
+    class Meta:
+        ordering=['port']

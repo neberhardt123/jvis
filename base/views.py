@@ -60,22 +60,34 @@ class Boxes(LoginRequiredMixin, ListView):
             context['boxes'] = context['boxes'].filter(Q(ip__icontains=search_input) | Q(hostname__icontains=search_input)) 
         context['search_input'] = search_input
         context['count'] = context['boxes'].count()
+        context['services_count'] = BoxService.objects.count()
         return context
 
     #PASS NEW DATA
     def post(self, *args, **kwargs):
         if self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            #print(self.request.POST)
+            new_box = Box.objects.filter(new=True)
+            new_service = BoxService.objects.filter(new=True)
             body_unicode = self.request.body.decode('utf-8')
             body = json.loads(body_unicode)
-            official_count = Box.objects.count()
-            if int(body) is int(official_count):
-                return JsonResponse({"test":"test"}, status=400)
+            stat = None
+            try:
+                stat = str(body['stat'])
+            except:
+                pass
+            if new_box or new_service:
+                Box.objects.all().update(new=False)
+                BoxService.objects.all().update(new=False)
+                stat2 = {'stat':stat}
+                stat2 = json.dumps(stat2)
+                return JsonResponse(stat2, safe=False, status=200)
             else:
-                return JsonResponse({"test":"test"}, status=200)
+                return JsonResponse({"test":"test"}, status=400)
+            #print(self.request.POST)
+
+            #official_count = Box.objects.count()
             #data_count = body['count']
             #print(data_count)
-
 
 class BoxDetail(LoginRequiredMixin, DetailView):
     model = Box
@@ -97,7 +109,7 @@ class BoxCreate(LoginRequiredMixin, CreateView):
 
 class BoxUpdate(LoginRequiredMixin, UpdateView):
     model = Box
-    fields = ['user', 'comments', 'active']
+    fields = ['user', 'comments', 'active', 'pwned']
     context_object_name='box_form'
     success_url = reverse_lazy('boxes')
 
@@ -123,7 +135,6 @@ class BoxUpload(View):
         #handle_uploaded_box(request.POST)
             return redirect('boxes')
         else:
-            print(request.FILES)
             handle_uploaded_box(request.FILES)
                 
     def get(self, request, *args, **kwargs):

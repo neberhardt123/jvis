@@ -16,7 +16,6 @@ def handle_uploaded_box(f):
         return
     if hosts:
         for host in hosts:
-            print(host)
             try:
                 address = host.address.get('addr')
             except:
@@ -39,25 +38,20 @@ def handle_uploaded_box(f):
                 dupe = None
 
             if dupe:
-                dupe.update(ip=address, hostname=host_name, state=host_state, os=os_fam)
+                dupe.update(ip=address, hostname=host_name, state=host_state, os=os_fam, new=True)
                 for d in dupe:
                     d.boxservice_set.all().delete()
                     d.save()
             else:
-                b = Box(ip=address, hostname=host_name, state=host_state, os=os_fam)
-                print("success")
+                b = Box(ip=address, hostname=host_name, state=host_state, os=os_fam, new=True)
                 b.save()
             try:
-                ports = soup.find_all('port')
+                ports = host.find_all('port')
             except:
                 ports = None
-            try:
-                services = soup.find_all('service')
-            except:
-                services = None
-
+  
             if ports:
-                for p, s in zip(ports, services):
+                for p in ports:
                     try:
                         service_port = p.get('portid')
                     except:
@@ -71,17 +65,22 @@ def handle_uploaded_box(f):
                     except:
                         service_state = "N/A"
                     try:
-                        service_name = s.get('name')
+                        service_name = p.service.get('name')
                     except:
                         service_name = "N/A"
                     try:
-                        service_version =  s.get('version')
+                        service_version =  p.service.get('version')
                     except:
                         service_version = "N/A"
                     try:
-                        service_product = s.get('product')
+                        service_product = p.service.get('product')
                     except:
                         service_product = "N/A"
+                    try:
+                        script_output = p.script.get('output')
+                    except:
+                        script_output = "N/A"
+
                     if(service_version is not None and service_product is not None):
                         service_pv_combined = service_version + service_product
                     else:
@@ -89,10 +88,10 @@ def handle_uploaded_box(f):
                     if dupe:
                         for d in dupe:
                             #get all bs for box?
-                            bs = BoxService (port=service_port, protocol=service_protocol, state=service_state, name=service_name, version=service_pv_combined, cBox=d)
+                            bs = BoxService (port=service_port, protocol=service_protocol, state=service_state, name=service_name, version=service_pv_combined, script=script_output, new=True, cBox=d)
                             bs.save()
                     else:
-                        bs = BoxService(port=service_port, protocol=service_protocol, state=service_state, name=service_name, version=service_pv_combined, cBox=b)
+                        bs = BoxService(port=service_port, protocol=service_protocol, state=service_state, name=service_name, version=service_pv_combined, script=script_output, new=True, cBox=b)
                         bs.save()
     return
 
