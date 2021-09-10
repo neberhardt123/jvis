@@ -1,3 +1,4 @@
+from django.http.response import HttpResponse
 from base.models import Box
 from django.shortcuts import render, redirect
 from django.views.generic.list import ListView
@@ -63,32 +64,17 @@ class Boxes(LoginRequiredMixin, ListView):
         context['services_count'] = BoxService.objects.count()
         return context
 
-    #PASS NEW DATA
+
     def post(self, *args, **kwargs):
         if self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
             new_box = Box.objects.filter(new=True)
             new_service = BoxService.objects.filter(new=True)
-            body_unicode = self.request.body.decode('utf-8')
-            body = json.loads(body_unicode)
-            stat = None
-            try:
-                stat = str(body['stat'])
-            except:
-                pass
             if new_box or new_service:
                 Box.objects.all().update(new=False)
                 BoxService.objects.all().update(new=False)
-                stat2 = {'stat':stat}
-                stat2 = json.dumps(stat2)
-                return JsonResponse(stat2, safe=False, status=200)
+                return HttpResponse(status=200)
             else:
-                return JsonResponse({"test":"test"}, status=400)
-            #print(self.request.POST)
-
-            #official_count = Box.objects.count()
-            #data_count = body['count']
-            #print(data_count)
-
+                return HttpResponse(status=400)
 class BoxDetail(LoginRequiredMixin, DetailView):
     model = Box
     context_object_name = 'box'
@@ -109,22 +95,10 @@ class BoxCreate(LoginRequiredMixin, CreateView):
 
 class BoxUpdate(LoginRequiredMixin, UpdateView):
     model = Box
-    fields = ['user', 'comments', 'active', 'pwned']
+    fields = ['user', 'hostname', 'comments', 'active', 'pwned']
     context_object_name='box_form'
     success_url = reverse_lazy('boxes')
 
-#CHANGE THIS TO CLASS BASED
-'''
-def upload_file(request):
-    if request.method == 'POST':
-        form = UploadFileForm(request.POST, request.FILES)
-        if form.is_valid():
-            handle_uploaded_box(request.FILES['file'])
-            return HttpResponseRedirect('boxes')
-    else:
-        form = UploadFileForm()
-    return render(request, 'base/upload.html', {'form': form})
-'''
 
 @method_decorator(csrf_exempt, name="dispatch")
 class BoxUpload(View):

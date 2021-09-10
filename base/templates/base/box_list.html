@@ -3,7 +3,7 @@
 {%load static%}
 <div class="header row">
     <div class="col">
-        <h1>User: {{request.user|title}}</h1>
+        <h2>User: {{request.user|title}}</h2>
 
     {% if request.user.is_authenticated %}
     <a href="{% url 'logout' %}">Logout</a>
@@ -29,7 +29,7 @@
         <div class="row">
           <!-- BEGIN RESULT -->
           <div class="col-md-9">
-            <h2 id="counter">Le BonBon Network (Machines: {{count}})</h2>
+            <h2 id="counter">Le BonBon Croissants Network (Machines: {{count}})</h2>
             <hr>
 
             <div class="input-group">
@@ -56,45 +56,72 @@
 
             <script type="text/javascript">
                 setInterval("refresh()", 5000);
-                //todo set csrf token
-                /**
-                var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+                function setStorage() {
+                    $('#accordion').on('shown.bs.collapse', '.collapse', function() {
+                        localStorage.setItem("coll_" + this.id, true);
+                    })
 
-                function csrfSafeMethod(method) {
-                    // these HTTP methods do not require CSRF protection
-                    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+                    $('#accordion').on('hidden.bs.collapse', '.collapse', function() {
+                        localStorage.setItem("coll_" + this.id, false);
+                    })
+
+                }
+                function setIcons() {
+                    $("#accordion").on('show.bs.collapse', '.collapse', function() {
+                        $(this).prev(".card-header").find(".fa").addClass("fa-minus").removeClass("fa-plus");
+                    })
+                    $("#accordion").on('hide.bs.collapse', '.collapse', function() {
+                        $(this).prev(".card-header").find(".fa").addClass("fa-plus").removeClass("fa-minus");
+                    })
                 }
 
-                $.ajaxSetup({
-                    beforeSend: function (xhr, settings) {
-                        // if not safe, set csrftoken
-                        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                function getStorage() {
+                    $(".collapse").each(function() {
+                        $(this).prev(".card-header").find(".fa").addClass("fa-plus").removeClass("fa-minus");
+                        if (localStorage.getItem("coll_" + this.id) == "true") {
+                            $(this).collapse("show");
+                            $(this).prev(".card-header").find(".fa").addClass("fa-minus").removeClass("fa-plus");
                         }
-                    }
-                });
-                **/
+                    })
+                }
+
+                $(document).ready(function() {
+                    $.ajaxSetup({ cache: false });
+                    setStorage();
+                    getStorage();
+                    setIcons();
+                })
+
                 function refresh() {
-                    var collapse = $("div.show")[0];
-                    var aid = $("div#accordion").find(collapse).attr("id");
-                    //alert(JSON.stringify(aid));
+
                     $.ajax({
                         url: document.URL,
                         type: 'post',
-                        dataType: 'json',
-                        contentType: 'application/json',
-                        data: JSON.stringify({"stat": aid}),
+                        cache: false,
+                        //contentType: 'application/json',
+                        //data: JSON.stringify({"stat": aid}),
                         //FIX WHY ITS NOT REFRESHING PAGE
-                        success: function(response) {
-                            var resp = JSON.parse(response);
-                            $('#accordion').load(document.URL + ' #accordion');
-                            $('#counter').load(document.URL + ' #counter');
+                        success: function() {
+
+                            $('#accordion').load(document.URL + " #accordion", function() {
+                                getStorage();
+                                setIcons();
+                            });
+                            $('#counter').load(document.URL + " #counter");
                         },
 
                         error: function(response) {
-
+                                
                         }
                     });
+
+                    /**
+                    $.get(document.URL, function(data, status) {
+                        $('#accordion').load(document.URL + ' #accordion');
+                        $('#counter').load(document.URL + ' #counter');
+                        //alert("tests");
+                    })
+                    **/
                 }
             </script>
             {%endblock javascript%}
@@ -104,11 +131,11 @@
                 <style type="text/css">
                 {% if box.pwned %}
                 #heading{{box.id}} {
-                    background:#38b838; !important;
+                    background:#4bbb4b; !important;
                 }
                 {% elif box.active %}
                 #heading{{box.id}} {
-                    background:#f39c12 !important;
+                    background:#ffb339 !important;
                 }
                 {% else %}
                 #heading{{box.id}} {
@@ -120,32 +147,29 @@
                 {%endif%}
                 </style>
                 <div class="card">
-                    <div class="card-header row" id="heading{{box.id}}" style="margin:0;padding:0;">
-                        
-                        <div style="margin:auto" class="col-1">
-                            <button style="margin:auto;float:left;" class="btn btn-link close" data-toggle="collapse" data-target="#collapse{{box.id}}" aria-expanded="false" aria-controls="collapse{{box.id}}" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+                    <div class="card-header row p-3" id="heading{{box.id}}" style="margin:0;padding:0;cursor: pointer;" data-toggle="collapse" data-target="#collapse{{box.id}}" aria-expanded="false" aria-controls="collapse{{box.id}}" aria-label="Close">
+                        <div class="col-md-1" style="margin:auto;">
+                                <i class="fa fa-plus"></i>
                         </div>
-                        <div class="col" style="margin:auto">
-                            <button class="btn btn-link close col" data-toggle="collapse" data-target="#collapse{{box.id}}" aria-expanded="false" aria-controls="collapse{{box.id}}" aria-label="Close" style="margin:auto;height:100%;width:100%;display:block;padding:20px;">
-                                <h5 style="text-shadow:none;">
-                                    {{box.hostname}} | {{box.ip}}
-                                </h5>
-                            </button>
+                        <div class="col" style="margin:auto;">
+                            <h5 style="text-shadow:none;text-align:center;">{{box.hostname}} | {{box.ip}}</h5>
                         </div>
-
                         <div class="col-md-2" style="margin:auto;">
-                            <h6 style="color:black">Assigned to: <b id="assignee" style="color:white; font-size:14; ">{{box.user}}</b></h6>
+                            <h6 class="float-right" style="color:black;">Assigned to: <b id="assignee" style="color:white; font-size:14; ">{{box.user}}</b></h6>
                         </div>
-                            <div class="col-md-1" style="margin:auto;">
-                            <a class="abut" href="{% url 'box-update' box.id %}"><button type="button" class="btn btn-info">Edit</button></a>
+                        <div class="col-md-1" style="margin:auto;">
+                            <a class="abut float-right" href="{% url 'box-update' box.id %}"><button type="button" class="btn btn-info">Edit</button></a>
                         </div>
                     </div>
                     <div id="collapse{{box.id}}" class="collapse" aria-labelledby="heading{{box.id}}" data-parent="#accordion">
                         <div class="card-body table-responsive">
-                            <h4>OS: <b>{{box.os}}</b></h5>
-                            <h4>Services </h5>
+                            {% if box.hostname %}
+                            <h5>Host: <b>{{box.hostname}}</b></h5>
+                            {% endif %}
+                            <h5>IP: <b>{{box.ip}}</b></h5>
+                            <h5>OS: <b>{{box.os}}</b></h5>
+                            <br>
+                            <h4>Services </h4>
                             <hr />
                             <table class="table">
                                 <thead class="thead-light">
@@ -181,7 +205,6 @@
                 <h3>No Boxes yet</h3>
                 {% endfor %}
             </div>
-
             <!-- END TABLE RESULT -->
             
           </div>
@@ -195,31 +218,5 @@
 </div>
 
 
-<!--start 
-
-    <h1>Boxes</h1>
-    <form method="GET">
-        <input type="text" placeholder="Search for IP or host name" name="search" value="{{search_input}}">
-        <input type="submit" value="Search">
-    </form>
-
-    <table>
-        <tr>
-            <th>Hosts</th>
-            <th></th>
-        </tr>
-        {% for box in boxes%}
-        <tr>
-            <td>{{box.hostname}} | {{box.ip}}</td>
-            <td><a href="{% url 'box-detail' box.id %}">View</a></td>
-            <td><a href="{% url 'box-update' box.id %}">Edit</a></td>
-        </tr>
-        {% empty %}
-        <h3>No Boxes yet</h3>
-        {% endfor %}
-    </table>
-
-    <h3><a href="{%url 'box-upload' %}">Upload</a></h3>
-here-->
 
 {%endblock content%}
