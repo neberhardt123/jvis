@@ -3,3 +3,19 @@ django-extensions
 beautifulsoup4 == 4.9.3
 soupsieve>1.2
 lxml == 4.6.3
+codecov
+coverage
+ftfy==4.4.3; python_version <= '2.7'
+ftfy==5.9.0; python_version >= '3.0' and python_version <= '3.5'
+ftfy; python_version >= '3.6'
+mailchecker
+phonenumbers
+python-dateutil
+python-fsutil
+python-slugify
+pyyaml
+requests
+six
+toml
+tox
+xmltodict

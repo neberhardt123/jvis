@@ -9,13 +9,14 @@ from django.db.models import Q
 from django.urls import reverse_lazy
 import asyncio
 import json
+import os
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponseRedirect
 from django.contrib.auth import login
 from django import http
-from create_box import handle_uploaded_box
+from base.modules.create_box import handle_uploaded_box
 from .models import Box, BoxService
 from .forms import UploadFileForm 
 from django.views.decorators.csrf import csrf_exempt
@@ -67,11 +68,13 @@ class Boxes(LoginRequiredMixin, ListView):
 
     def post(self, *args, **kwargs):
         if self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            new_box = Box.objects.filter(new=True)
-            new_service = BoxService.objects.filter(new=True)
+            new_box = Box.objects.filter(Q(new=True) | Q(updated=True))
+            new_service = BoxService.objects.filter(Q(new=True) | ~Q(updated=None))
+            #new_service = BoxService.objects.filter(Q(new=True) | Q(updated=True))
             if new_box or new_service:
-                Box.objects.all().update(new=False)
-                BoxService.objects.all().update(new=False)
+                Box.objects.all().update(new=False, updated=False)
+                BoxService.objects.all().update(new=False, updated=None)
+                #BoxService.objects.all().update(new=False, updated=False)
                 return HttpResponse(status=200)
             else:
                 return HttpResponse(status=400)

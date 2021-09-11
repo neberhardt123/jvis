@@ -17,4 +17,4 @@ urlpatterns = [
     path('upload/', BoxUpload.as_view(), name="box-upload"),
 ]
 
-urlpatterns += static(settings.NMAP_URL, document_root=settings.NMAP_ROOT)
+#urlpatterns += static(settings.NMAP_URL, document_root=settings.NMAP_ROOT)

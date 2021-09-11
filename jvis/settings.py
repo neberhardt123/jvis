@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'base.apps.BaseConfig',
-    'django_extensions'
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -131,10 +131,7 @@ MEDIA_URL = '/images/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
 
-NMAP_URL = '/nmap/'
-
-NMAP_ROOT = os.path.join(BASE_DIR, 'nmap')
-
+MODULES_ROOT = os.path.join(BASE_DIR, 'modules')
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
