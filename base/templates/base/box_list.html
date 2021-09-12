@@ -14,13 +14,9 @@
     </div>
     <div class="col" style="float:right;margin:auto;">
         <a href ="{% static 'client.py' %}" download="client.py"><input class="btn btn-info" type="submit" value="Download Client Script"></a>
-        <a href = "{% static 'diagram.csv'%}" download="diagram.csv"><input class="btn btn-info" type="submit" value="Download diagram"></a>
-        <form id="send-push__form">
-            <h3 class="header">Send a push notification</h3>
-            <p class="error"></p>
-            <input type="text" name="head" placeholder="Header: Your favorite airline 😍">
-            <textarea name="body" id="" cols="30" rows="10" placeholder="Body: Your flight has been cancelled 😱😱😱"></textarea>
-            <button>Send Me</button>
+        <form method="post" style="margin:0;padding:0;display:inline">
+        {% csrf_token %}
+        <input class="btn btn-info" name="run_diagram" type="submit" value="Download Diagram">
         </form>
     </div>
 </div>
@@ -61,7 +57,6 @@
             </div>
 
             {% block javascript %}
-            <script src="{% static '/js/registerSw.js' %}"></script>
             <script type="text/javascript">
                 setInterval("refresh()", 5000);
                 function setStorage() {

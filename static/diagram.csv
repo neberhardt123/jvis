@@ -1,0 +1,22 @@
+# label: %component% 
+# style: shape=%shape%;fillColor=%fill%;strokeColor=%stroke%;fontSize=%fontSize%;fontColor=%font%;aspect=fixed;align=center;%type%;image=%image% 
+# namespace: csvimport- 
+# connect: {"from":"refs", "to":"id", "style":"opacity=0"} 
+# width: @width 
+# parentstyle: swimlane;whiteSpace=wrap;html=1;childLayout=stackLayout;horizontal=1;horizontalStack=0;resizeParent=1;resizeLast=0;collapsible=1; 
+# parent: %parent% 
+# identity: %identity% 
+# height: @height 
+# padding: 15 
+# ignore: id, shape, fill, stroke, refs 
+# nodespacing: 40 
+# levelspacing: 100 
+# edgespacing: 40 
+# layout: horizontalflow 
+id,component,refs,fill,stroke,shape,type,image,width,height,font,fontSize,parent,identity
+box0,,info0,,,,image,img/lib/mscae/VirtualMachineWindows.svg,90,80,,,,box0
+info0,Windows Host,,#60a917,,,swimlane,,220,80,#FFFFFF,14,,info0
+box1,,info1,,,,image,img/lib/mscae/VirtualMachineWindows.svg,90,80,,,,box1
+info1,Windows Host,,#60a917,,,swimlane,,220,80,#FFFFFF,14,,info1
+box2,,info2,,,,image,img/lib/mscae/VirtualMachineWindows.svg,90,80,,,,box2
+info2,Windows Host,,#60a917,,,swimlane,,220,80,#FFFFFF,14,,info2

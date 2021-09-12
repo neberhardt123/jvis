@@ -16,6 +16,7 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth import login
 from django import http
 from base.modules.create_box import handle_uploaded_box
+from base.modules import diagram
 from .models import Box, BoxService
 from .forms import UploadFileForm 
 from django.views.decorators.csrf import csrf_exempt
@@ -25,9 +26,10 @@ from django.views.decorators.http import require_GET, require_POST
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from django.conf import settings
-from webpush import send_user_notification
 
 #pip install --upgrade pip
+#install nmap
+#install unzip, wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip unzip ngrok-stable-linux-amd64.zip
 class CustomLoginView(LoginView):
     template_name = 'base/login.html'
     fields = '__all__'
@@ -71,13 +73,13 @@ class Boxes(LoginRequiredMixin, ListView):
         context['services_count'] = BoxService.objects.count()
         return context
 
-    def get(self, request, *args, **kwargs):
-        webpush_settings = getattr(settings, 'WEBPUSH_SETTINGS', {})
-        vapid_key = webpush_settings.get('VAPID_PUBLIC_KEY')
-        user = request.user
-
-
-        return render(request, 'base/box_list.html', {user: user, 'vapid_key': vapid_key})
+    def post(self, request, *args, **kwargs):
+        if 'run_diagram' in request.POST:
+            print("OOGA BOOGA")
+            return diagram.create_diagram()
+        else:
+            print("nani?")
+            return redirect("boxes")
     #def post(self, *args, **kwargs):
     #    if self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
             #new_box = Box.objects.filter(browserupdate=True)
@@ -112,25 +114,6 @@ class BoxUpdate(LoginRequiredMixin, UpdateView):
     context_object_name='box_form'
     success_url = reverse_lazy('boxes')
 
-
-@require_POST
-@csrf_exempt
-def send_push(request):
-    try:
-        body = request.body
-        data = json.loads(body)
-
-        if 'head' not in data or 'body' not in data or 'id' not in data:
-            return JsonResponse(status=400, data={"message": "Invalid data format"})
-
-        user_id = data['id']
-        user = get_object_or_404(User, pk=user_id)
-        payload = {'head': data['head'], 'body': data['body']}
-        send_user_notification(user=user, payload=payload, ttl=1000)
-
-        return JsonResponse(status=200, data={"message": "Web push successful"})
-    except TypeError:
-        return JsonResponse(status=500, data={"message": "An error occurred"})
 
 
 @method_decorator(csrf_exempt, name="dispatch")

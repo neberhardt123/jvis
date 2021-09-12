@@ -2,6 +2,7 @@ import argparse
 import sys
 import os
 import requests
+import time
 
 #LOOP
 #ADD LESS COMPLEX SCAN
@@ -19,34 +20,54 @@ if __name__ == '__main__':
         sys.exit(1)
 
     args = parser.parse_args()
-    initial_scan = "nmap -n -sn {} -oG - | awk '/Up$/{{print $2}}' > first.txt".format(args.victim_addr)
-    first_scan = "nmap -T5 -oX temp.xml {}".format(args.victim_addr)
-    second_scan = "nmap -T5 -O --osscan-limit -sV -sC -iL first.txt -oX temp.xml {}".format(args.victim_addr)
+    #initial_scan = "nmap -n -sn {} -oG - | awk '/Up$/{{print $2}}' > first.txt".format(args.victim_addr)
+    initial_scan = "nmap -n -sn -PU -PY80,23,443,21,22,25,3389,110,445,139 -PS80,23,443,21,22,25,3389,110,445,139,143,53,135,3306,8080,1723,111,995,993,5900,1025,587,8888 {} -oG - | awk '/Up$/{{print $2}}' > hosts_simple.txt".format(args.victim_addr)
+    initial_scan_v = "nmap -n -sn -PU -PS --top-ports 1000 {} -oG - | awk '/Up$/{{print $2}}' > hosts_detailed.txt".format(args.victim_addr)
+
+    first_scan = "nmap -n -T5 -iL hosts_simple.txt -oX temp.xml {}".format(args.victim_addr)
+    second_scan = "nmap -T4 -O --osscan-limit -iL hosts_detailed.txt -Pn -sSVC --top-ports 2000 -oX temp.xml {}".format(args.victim_addr)
+
+    #fast host discovery
+
     try:
-        os.remove('first.txt')
+        os.remove('hosts_simple.txt')
     except:
         pass
     os.system(initial_scan)
-    for x in range(2):
-        try:
-            os.remove('temp.xml')
-        except:
-            pass
-        if x == 0:
-            os.system(first_scan)
-        elif x == 1:
-            os.system(second_scan)
-        #os.system("nmap -v -T5 {} -p 21,22,23,25,110,139,443,445,3000,3389,8080 | grep Discovered | awk '{print $6}' > second.txt")
-        #os.system("sort first.txt second.txt | uniq > initial.txt")
-        #os.system("nmap -T5 -iL first.txt -oX temp.xml {}".format(args.victim_addr))
-        #os.system("nmap -sV -oX temp.xml {}".format(args.victim_addr))
-        try:
-            with open('temp.xml', 'rb') as f:
-                r = requests.post('{}:{}/upload/'.format(args.target_ip,args.target_port), files={'file': f})
-        except Exception as e:
-            print(e)
+
     try:
         os.remove('temp.xml')
     except:
         pass
+    os.system(first_scan)
+
+    try:
+        with open('temp.xml', 'rb') as f:
+            r = requests.post('{}:{}/upload/'.format(args.target_ip,args.target_port), files={'file': f})
+            f.close()
+    except Exception as e:
+        print(e)
+
+    #slower host discovery
+    
+    try:
+        os.remove('hosts_detailed.txt')
+    except:
+        pass
+    os.system(initial_scan_v)
+
+    #while True:
+    try:
+        os.remove('temp.xml')
+    except:
+        pass
+    os.system(second_scan)
+    try:
+        with open('temp.xml', 'rb') as f:
+            r = requests.post('{}:{}/upload/'.format(args.target_ip,args.target_port), files={'file': f})
+            f.close()
+    except Exception as e:
+        print(e)
+            
+    #    time.sleep(10)
 
