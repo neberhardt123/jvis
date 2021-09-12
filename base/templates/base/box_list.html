@@ -14,6 +14,14 @@
     </div>
     <div class="col" style="float:right;margin:auto;">
         <a href ="{% static 'client.py' %}" download="client.py"><input class="btn btn-info" type="submit" value="Download Client Script"></a>
+        <a href = "{% static 'diagram.csv'%}" download="diagram.csv"><input class="btn btn-info" type="submit" value="Download diagram"></a>
+        <form id="send-push__form">
+            <h3 class="header">Send a push notification</h3>
+            <p class="error"></p>
+            <input type="text" name="head" placeholder="Header: Your favorite airline 😍">
+            <textarea name="body" id="" cols="30" rows="10" placeholder="Body: Your flight has been cancelled 😱😱😱"></textarea>
+            <button>Send Me</button>
+        </form>
     </div>
 </div>
 
@@ -53,7 +61,7 @@
             </div>
 
             {% block javascript %}
-
+            <script src="{% static '/js/registerSw.js' %}"></script>
             <script type="text/javascript">
                 setInterval("refresh()", 5000);
                 function setStorage() {
@@ -79,21 +87,25 @@
                     $(".collapse").each(function() {
                         $(this).prev(".card-header").find(".fa").addClass("fa-plus").removeClass("fa-minus");
                         if (localStorage.getItem("coll_" + this.id) == "true") {
-                            $(this).collapse("show");
+                            $(this).addClass("show")
                             $(this).prev(".card-header").find(".fa").addClass("fa-minus").removeClass("fa-plus");
                         }
                     })
                 }
 
                 $(document).ready(function() {
-                    $.ajaxSetup({ cache: false });
                     setStorage();
                     getStorage();
                     setIcons();
                 })
 
                 function refresh() {
-
+                    $('#accordion').load(document.URL + " #accordion", function() {
+                        getStorage();
+                        setIcons();
+                    });
+                    $('#counter').load(document.URL + " #counter");
+                    /**
                     $.ajax({
                         url: document.URL,
                         type: 'post',
@@ -103,24 +115,13 @@
                         //FIX WHY ITS NOT REFRESHING PAGE
                         success: function() {
 
-                            $('#accordion').load(document.URL + " #accordion", function() {
-                                getStorage();
-                                setIcons();
-                            });
-                            $('#counter').load(document.URL + " #counter");
+
                         },
 
                         error: function(response) {
                                 
                         }
                     });
-
-                    /**
-                    $.get(document.URL, function(data, status) {
-                        $('#accordion').load(document.URL + ' #accordion');
-                        $('#counter').load(document.URL + ' #counter');
-                        //alert("tests");
-                    })
                     **/
                 }
             </script>

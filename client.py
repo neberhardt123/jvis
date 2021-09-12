@@ -44,6 +44,7 @@ if __name__ == '__main__':
     try:
         with open('temp.xml', 'rb') as f:
             r = requests.post('{}:{}/upload/'.format(args.target_ip,args.target_port), files={'file': f})
+            f.close()
     except Exception as e:
         print(e)
 
@@ -64,6 +65,7 @@ if __name__ == '__main__':
     try:
         with open('temp.xml', 'rb') as f:
             r = requests.post('{}:{}/upload/'.format(args.target_ip,args.target_port), files={'file': f})
+            f.close()
     except Exception as e:
         print(e)
             

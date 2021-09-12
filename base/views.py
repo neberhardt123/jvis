@@ -1,4 +1,3 @@
-from django.http.response import HttpResponse
 from base.models import Box
 from django.shortcuts import render, redirect
 from django.views.generic.list import ListView
@@ -21,8 +20,14 @@ from .models import Box, BoxService
 from .forms import UploadFileForm 
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import classonlymethod, method_decorator
-from django.http import JsonResponse
+from django.http.response import JsonResponse, HttpResponse
+from django.views.decorators.http import require_GET, require_POST
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.models import User
+from django.conf import settings
+from webpush import send_user_notification
 
+#pip install --upgrade pip
 class CustomLoginView(LoginView):
     template_name = 'base/login.html'
     fields = '__all__'
@@ -48,11 +53,12 @@ class RegisterPage(FormView):
             return redirect('boxes')
         return super(RegisterPage, self).get(*args, **kwargs)
 
-@method_decorator(csrf_exempt, name="dispatch")
+
 class Boxes(LoginRequiredMixin, ListView):
     model = Box
     context_object_name = 'boxes'
 
+    
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -65,19 +71,23 @@ class Boxes(LoginRequiredMixin, ListView):
         context['services_count'] = BoxService.objects.count()
         return context
 
+    def get(self, request, *args, **kwargs):
+        webpush_settings = getattr(settings, 'WEBPUSH_SETTINGS', {})
+        vapid_key = webpush_settings.get('VAPID_PUBLIC_KEY')
+        user = request.user
 
-    def post(self, *args, **kwargs):
-        if self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            new_box = Box.objects.filter(Q(new=True) | Q(updated=True))
-            new_service = BoxService.objects.filter(Q(new=True) | ~Q(updated=None))
+
+        return render(request, 'base/box_list.html', {user: user, 'vapid_key': vapid_key})
+    #def post(self, *args, **kwargs):
+    #    if self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            #new_box = Box.objects.filter(browserupdate=True)
+            #new_service = BoxService.objects.filter(browserupdate=True)
             #new_service = BoxService.objects.filter(Q(new=True) | Q(updated=True))
-            if new_box or new_service:
-                Box.objects.all().update(new=False, updated=False)
-                BoxService.objects.all().update(new=False, updated=None)
+            #if new_box or new_service:
                 #BoxService.objects.all().update(new=False, updated=False)
-                return HttpResponse(status=200)
-            else:
-                return HttpResponse(status=400)
+    #        return HttpResponse(status=200)
+            #else:
+            #    return HttpResponse(status=400)
 class BoxDetail(LoginRequiredMixin, DetailView):
     model = Box
     context_object_name = 'box'
@@ -98,9 +108,29 @@ class BoxCreate(LoginRequiredMixin, CreateView):
 
 class BoxUpdate(LoginRequiredMixin, UpdateView):
     model = Box
-    fields = ['user', 'hostname', 'comments', 'active', 'pwned']
+    fields = ['user', 'hostname', 'os', 'comments', 'active', 'pwned']
     context_object_name='box_form'
     success_url = reverse_lazy('boxes')
+
+
+@require_POST
+@csrf_exempt
+def send_push(request):
+    try:
+        body = request.body
+        data = json.loads(body)
+
+        if 'head' not in data or 'body' not in data or 'id' not in data:
+            return JsonResponse(status=400, data={"message": "Invalid data format"})
+
+        user_id = data['id']
+        user = get_object_or_404(User, pk=user_id)
+        payload = {'head': data['head'], 'body': data['body']}
+        send_user_notification(user=user, payload=payload, ttl=1000)
+
+        return JsonResponse(status=200, data={"message": "Web push successful"})
+    except TypeError:
+        return JsonResponse(status=500, data={"message": "An error occurred"})
 
 
 @method_decorator(csrf_exempt, name="dispatch")

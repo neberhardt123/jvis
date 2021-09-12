@@ -11,6 +11,10 @@
         <title>Le Bon Bon Boxes</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="vapid-key" content="{{ vapid_key }}">
+        {% if user.id %}
+        <meta name="user_id" content="{{ user.id }}">
+        {% endif %}
         <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
         <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
         <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>

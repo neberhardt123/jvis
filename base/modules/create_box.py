@@ -50,6 +50,7 @@ def handle_uploaded_box(f):
             else:
                 if retrieved_box.updated is True:
                     n.append_notification(retrieved_box, None, True, None, None)
+
             #print(retrieved_box)
             #print(created)
 
@@ -71,6 +72,7 @@ def handle_uploaded_box(f):
                 ports = None
   
             if ports:
+                n.append_block()
                 for p in ports:
                     try:
                         service_port = p.get('portid')
@@ -124,7 +126,10 @@ def handle_uploaded_box(f):
                     #else:
                     #    bs = BoxService(port=service_port, protocol=service_protocol, state=service_state, name=service_name, version=service_pv_combined, script=script_output, new=True, cBox=retrieved_box)
                     #    bs.save()
-    n.send_notification()
+        n.append_block()
+        n.send_notification()
+        Box.objects.all().update(new=False, updated=False)
+        BoxService.objects.all().update(new=False, updated=None)
     return
 
     #b = Box(ip="192.168.5.140", comments="test box!")

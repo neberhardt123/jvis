@@ -23,12 +23,12 @@ class Box(models.Model):
     new = models.BooleanField(default=True)
     updated = models.BooleanField(default=False)
 
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.__original_ip = self.ip
         self.__original_hostname = self.hostname
         self.__original_state = self.state
-
 
     def save(self, force_insert=False, force_update=False, *args, **kwargs):
         if (self.hostname != self.__original_hostname) or (self.state != self.__original_state):
@@ -38,6 +38,7 @@ class Box(models.Model):
         self.__original_ip = self.ip
         self.__original_hostname = self.hostname
         self.__original_state = self.state
+        
 
     def __str__(self):
         return self.ip
