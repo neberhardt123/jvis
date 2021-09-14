@@ -70,16 +70,13 @@ class Boxes(LoginRequiredMixin, ListView):
             context['boxes'] = context['boxes'].filter(Q(ip__icontains=search_input) | Q(hostname__icontains=search_input)) 
         context['search_input'] = search_input
         context['count'] = context['boxes'].count()
-        context['services_count'] = BoxService.objects.count()
         return context
 
     def post(self, request, *args, **kwargs):
         if 'run_diagram' in request.POST:
-            print("OOGA BOOGA")
             return diagram.create_diagram()
-        else:
-            print("nani?")
-            return redirect("boxes")
+        elif 'run_topology' in request.POST:
+            return diagram.create_topology()
     #def post(self, *args, **kwargs):
     #    if self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
             #new_box = Box.objects.filter(browserupdate=True)
@@ -110,7 +107,7 @@ class BoxCreate(LoginRequiredMixin, CreateView):
 
 class BoxUpdate(LoginRequiredMixin, UpdateView):
     model = Box
-    fields = ['user', 'hostname', 'os', 'comments', 'active', 'pwned']
+    fields = ['user', 'hostname', 'os', 'cidr', 'comments', 'active', 'pwned']
     context_object_name='box_form'
     success_url = reverse_lazy('boxes')
 

@@ -1,22 +1,28 @@
 # label: %component% 
-# style: shape=%shape%;fillColor=%fill%;strokeColor=%stroke%;fontSize=%fontSize%;fontColor=%font%;aspect=fixed;align=center;%type%;image=%image% 
+# style: shape=%shape%;fillColor=%fill%;strokeColor=%stroke%;fontSize=%fontSize%;fontColor=%font%;aspect=fixed;%type%;image=%image%;align=center;whiteSpace=wrap;html=1 
 # namespace: csvimport- 
-# connect: {"from":"refs", "to":"id", "style":"opacity=0"} 
+# connect: {"from":"refs", "to":"id","style":"opacity=0","invert":true} 
 # width: @width 
-# parentstyle: swimlane;whiteSpace=wrap;html=1;childLayout=stackLayout;horizontal=1;horizontalStack=0;resizeParent=1;resizeLast=0;collapsible=1; 
-# parent: %parent% 
-# identity: %identity% 
+# parentstyle: swimlane;fontStyle=1;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#3f7de0;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;fontColor=#ffffff;aspect=fixed;fontSize=14;whiteSpace=wrap;html=1 
+# parent: parent 
+# identity: identity 
 # height: @height 
-# padding: 15 
+# left:%left%padding: 15 
 # ignore: id, shape, fill, stroke, refs 
 # nodespacing: 40 
-# levelspacing: 100 
+# levelspacing: 20 
 # edgespacing: 40 
 # layout: horizontalflow 
 id,component,refs,fill,stroke,shape,type,image,width,height,font,fontSize,parent,identity
-box0,,info0,,,,image,img/lib/mscae/VirtualMachineWindows.svg,90,80,,,,box0
-info0,Windows Host,,#60a917,,,swimlane,,220,80,#FFFFFF,14,,info0
-box1,,info1,,,,image,img/lib/mscae/VirtualMachineWindows.svg,90,80,,,,box1
-info1,Windows Host,,#60a917,,,swimlane,,220,80,#FFFFFF,14,,info1
-box2,,info2,,,,image,img/lib/mscae/VirtualMachineWindows.svg,90,80,,,,box2
-info2,Windows Host,,#60a917,,,swimlane,,220,80,#FFFFFF,14,,info2
+info324,10.10.10.5,box324,#60a917,,,swimlane,,220,80,#FFFFFF,14,,info324
+text324,,,,,,text,,220,80,#000000,14,info324,text324
+info322,windowstest,box322,#60a917,,,swimlane,,220,80,#FFFFFF,14,,info322
+text322,Port 45 - wateva<br>,,,,,text,,220,80,#000000,14,info322,text322
+info323,host232d,box323,#60a917,,,swimlane,,220,80,#FFFFFF,14,,info323
+text323,Port 555 - ogya<br>,,,,,text,,220,80,#000000,14,info323,text323
+info321,scanme.nmap.org,box321,#60a917,,,swimlane,,220,80,#FFFFFF,14,,info321
+text321,Port 22 - ssh<br>Port 80 - http<br>Port 9929 - nping-echo<br>Port 31337 - tcpwrapped<br>,,,,,text,,220,80,#000000,14,info321,text321
+box322,,,,,,image,img/lib/mscae/VirtualMachineWindows.svg,90,80,,,,box322
+box323,,,,,,image,img/lib/mscae/VirtualMachineWindows.svg,90,80,,,,box323
+box321,,,,,,image,img/lib/mscae/VM_Linux.svg,90,80,,,,box321
+box324,,,,,,image,,90,80,,,,box324

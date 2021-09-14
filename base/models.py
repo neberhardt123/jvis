@@ -22,6 +22,7 @@ class Box(models.Model):
     os = models.CharField(max_length=200, null=True, blank=True)
     new = models.BooleanField(default=True)
     updated = models.BooleanField(default=False)
+    cidr = models.CharField(max_length=200, default="/24",null=True, blank=True)
 
 
     def __init__(self, *args, **kwargs):

@@ -2,7 +2,7 @@
 {% block content %}
 {%load static%}
 <div class="header row">
-    <div class="col">
+    <div class="col-md-5">
         <h2>User: {{request.user|title}}</h2>
 
     {% if request.user.is_authenticated %}
@@ -16,7 +16,11 @@
         <a href ="{% static 'client.py' %}" download="client.py"><input class="btn btn-info" type="submit" value="Download Client Script"></a>
         <form method="post" style="margin:0;padding:0;display:inline">
         {% csrf_token %}
-        <input class="btn btn-info" name="run_diagram" type="submit" value="Download Diagram">
+        <input class="btn btn-info" name="run_diagram" type="submit" value="Generate Diagram">
+        </form>
+        <form method="post" style="margin:0;padding:0;display:inline">
+        {% csrf_token %}
+        <input class="btn btn-info" name="run_topology" type="submit" value="Generate Topology">
         </form>
     </div>
 </div>
@@ -164,8 +168,9 @@
                             {% endif %}
                             <h5>IP: <b>{{box.ip}}</b></h5>
                             <h5>OS: <b>{{box.os}}</b></h5>
+                            <h5>CIDR: <b>{{box.cidr}}</b></h5>
                             <br>
-                            <h4>Services ({{services_count}}) </h4>
+                            <h4>Services ({{box.boxservice_set.all.count}}) </h4>
                             <hr />
                             <table class="table">
                                 <thead class="thead-light">

@@ -1,0 +1,32 @@
+# label: %name% 
+# parentstyle: swimlane;fontStyle=1;childLayout=stackLayout;horizontal=1;startSize=26;autoSize=1;fillColor=#3f7de0;horizontalStack=1;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;fontColor=#ffffff;fontSize=12;whiteSpace=wrap;html=1 
+# stylename: cat 
+# styles: {"atkr": "fontColor=#232F3E;fillColor=#232F3E;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=image;image=https://cdn0.iconfinder.com/data/icons/cyber-security-solid-threat-protection/512/Hacker_anonymous-128.png;strokeColor=#232F3E;aspect=fixed;whiteSpace=wrap;", "rtr": "fontColor=#232F3E;fillColor=#232F3E;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=image;image=img/lib/clip_art/networking/Router_Icon_128x128.png;strokeColor=#232F3E;aspect=fixed;whiteSpace=wrap;"} 
+# vars: - 
+# labelname: - 
+# labels: - 
+# identity: identity 
+# parent: parent 
+# namespace: csvimport- 
+# connect:{"from": "refs", "to":"id", "style":"rounded=0;endArrow=classic;jumpStyle=sharp;strokeColor=#3f7de0"} 
+# left: 
+# top: 
+# width: @width 
+# height: auto 
+# padding: 15 
+# ignore: id, cat, fill, refs 
+# nodespacing: 40 
+# levelspacing: 100 
+# edgespacing: 40 
+# layout: verticalflow 
+id,name,refs,cat,width,height,parent,identity
+attacker_parent,Attacker Network,router,,180,80,,attacker_parent
+attacker,VDI Infrastructure,,atkr,80,60,attacker_parent,attacker
+10.10.10.0/24,CHANGE ME<br>10.10.10.0/24,,,180,500,,10.10.10.0/24
+192.168.1.0/24,CHANGE ME<br>192.168.1.0/24,,,180,500,,192.168.1.0/24
+45.33.32.0/24,CHANGE ME<br>45.33.32.0/24,,,180,500,,45.33.32.0/24
+10.10.10.5,10.10.10.5<br>None,,atkr,80,,10.10.10.0/24,10.10.10.5
+192.168.1.1,192.168.1.1<br>windowstest,,atkr,80,,192.168.1.0/24,192.168.1.1
+192.168.1.50,192.168.1.50<br>host232d,,atkr,80,,192.168.1.0/24,192.168.1.50
+45.33.32.156,45.33.32.156<br>scanme.nmap.org,,atkr,80,,45.33.32.0/24,45.33.32.156
+router,,"10.10.10.0/24,192.168.1.0/24,45.33.32.0/24",rtr,122,80,,router
