@@ -67,11 +67,15 @@
                     $('#accordion').on('shown.bs.collapse', '.collapse', function() {
                         localStorage.setItem("coll_" + this.id, true);
                     })
-
+                    $('#accordion').on('show.bs.collapse', '.collapse', function() {
+                        localStorage.setItem("coll_" + this.id, true);
+                    })
                     $('#accordion').on('hidden.bs.collapse', '.collapse', function() {
                         localStorage.setItem("coll_" + this.id, false);
                     })
-
+                    $('#accordion').on('hide.bs.collapse', '.collapse', function() {
+                        localStorage.setItem("coll_" + this.id, false);
+                    })
                 }
                 function setIcons() {
                     $("#accordion").on('show.bs.collapse', '.collapse', function() {
@@ -158,7 +162,7 @@
                             <h6 class="float-right" style="color:black;">Assigned to: <b id="assignee" style="color:white; font-size:14; ">{{box.user}}</b></h6>
                         </div>
                         <div class="col-md-1" style="margin:auto;">
-                            <a class="abut float-right" href="{% url 'box-update' box.id %}"><button type="button" class="btn btn-info">Edit</button></a>
+                            <a class="abut float-right" href="{% url 'box-update' box.id %}"><button type="button" class="btn btn-info" onClick="event.stopPropagation();">Edit</button></a>
                         </div>
                     </div>
                     <div id="collapse{{box.id}}" class="collapse" aria-labelledby="heading{{box.id}}" data-parent="#accordion">

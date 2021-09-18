@@ -3,7 +3,7 @@
 # namespace: csvimport- 
 # connect: {"from":"refs", "to":"id","style":"opacity=0","invert":true} 
 # width: @width 
-# parentstyle: swimlane;fontStyle=1;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#3f7de0;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;fontColor=#ffffff;aspect=fixed;fontSize=14;whiteSpace=wrap;html=1 
+# parentstyle: swimlane;fontStyle=1;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#60A917;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;fontColor=#ffffff;aspect=fixed;fontSize=14;whiteSpace=wrap;html=1 
 # parent: parent 
 # identity: identity 
 # height: @height 
