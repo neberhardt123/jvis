@@ -2,7 +2,7 @@
 {% block content %}
 {%load static%}
 <div class="header row">
-    <div class="col-md-5">
+    <div class="col-md-3">
         <h2>User: {{request.user|title}}</h2>
 
     {% if request.user.is_authenticated %}
@@ -14,6 +14,9 @@
     </div>
     <div class="col" style="float:right;margin:auto;">
         <a href ="{% static 'client.py' %}" download="client.py"><input class="btn btn-info" type="submit" value="Download Client Script"></a>
+        <form method="post" style="margin:0;padding:0;display:inline">
+        {% csrf_token %}
+        <input class="btn btn-info" name="run_hostlist" type="submit" value="Download Host List">
         <form method="post" style="margin:0;padding:0;display:inline">
         {% csrf_token %}
         <input class="btn btn-info" name="run_diagram" type="submit" value="Generate Diagram">
@@ -37,7 +40,7 @@
         <div class="row">
           <!-- BEGIN RESULT -->
           <div class="col-md-9">
-            <h2 id="counter">Le BonBon Croissants Network (Machines: {{count}})</h2>
+            <h2 id="counter">JVIS Overview (Machines: {{count}})</h2>
             <hr>
 
             <div class="input-group">
@@ -108,24 +111,6 @@
                         setIcons();
                     });
                     $('#counter').load(document.URL + " #counter");
-                    /**
-                    $.ajax({
-                        url: document.URL,
-                        type: 'post',
-                        cache: false,
-                        //contentType: 'application/json',
-                        //data: JSON.stringify({"stat": aid}),
-                        //FIX WHY ITS NOT REFRESHING PAGE
-                        success: function() {
-
-
-                        },
-
-                        error: function(response) {
-                                
-                        }
-                    });
-                    **/
                 }
             </script>
             {%endblock javascript%}

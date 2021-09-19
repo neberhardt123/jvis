@@ -13,7 +13,7 @@ class Box(models.Model):
     __original_state = None
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-    ip = models.GenericIPAddressField()
+    ip = models.GenericIPAddressField(null=False,blank=False)
     hostname = models.CharField(max_length=200, null=True, blank=True)
     state = models.CharField(max_length=200, null=True, blank=True)
     comments = models.TextField(null=True, blank=True)
@@ -23,6 +23,13 @@ class Box(models.Model):
     new = models.BooleanField(default=True)
     updated = models.BooleanField(default=False)
     cidr = models.CharField(max_length=200, default="/24",null=True, blank=True)
+    orderedip = models.BigIntegerField(null=True, blank=True, default=0)
+
+    @property
+    def get_ordered_ip(self):
+        octets = self.ip.split(".")
+        octet_num = (int(octets[0]) * 256^3) +  (int(octets[1]) * 256^2) + (int(octets[2]) * 256) + int(octets[3])
+        return octet_num
 
 
     def __init__(self, *args, **kwargs):
@@ -31,21 +38,23 @@ class Box(models.Model):
         self.__original_hostname = self.hostname
         self.__original_state = self.state
 
+
     def save(self, force_insert=False, force_update=False, *args, **kwargs):
         if (self.hostname != self.__original_hostname) or (self.state != self.__original_state):
             self.updated = True
-
-        super().save(force_insert, force_update, *args, **kwargs)
+        self.orderedip = self.get_ordered_ip
         self.__original_ip = self.ip
         self.__original_hostname = self.hostname
         self.__original_state = self.state
-        
+        super().save(force_insert, force_update, *args, **kwargs)
+
+
 
     def __str__(self):
         return self.ip
 
     class Meta:
-        ordering = ['ip']
+        ordering = ['orderedip']
 
 class BoxService(models.Model):
 
@@ -55,8 +64,7 @@ class BoxService(models.Model):
     __original_name = None
     __original_version = None
     __original_script = None
-
-
+    
     port = models.IntegerField(blank=True)
     protocol = models.CharField(max_length=200, blank=True)
     state = models.TextField(null=True, blank=True)

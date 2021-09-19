@@ -60,15 +60,26 @@ class Boxes(LoginRequiredMixin, ListView):
     model = Box
     context_object_name = 'boxes'
 
-    
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         search_input = self.request.GET.get('search') or ''
         if search_input:
-            #context['boxes'] = context['boxes'].filter(boxservice__port=search_input) 
-            context['boxes'] = context['boxes'].filter(Q(ip__icontains=search_input) | Q(hostname__icontains=search_input)) 
-        context['search_input'] = search_input
+            if 'port=' in search_input:
+                port_string=search_input.split("port=",1)[1]
+                port_int=int(port_string.strip())
+                #ports=port_string.split(",")
+                ##for port in ports:
+                #    port = port.strip()
+                #    port = int(port)
+                #    print(type(port))
+                #for p in ports:
+                #    print(p.strip())
+                context['boxes'] = Box.objects.filter(boxservice__port__exact=port_int)
+                context['search_input'] = search_input
+            else:
+                context['boxes'] = context['boxes'].filter(Q(ip__icontains=search_input) | Q(hostname__icontains=search_input)) 
+                context['search_input'] = search_input
         context['count'] = context['boxes'].count()
         return context
 
@@ -77,20 +88,24 @@ class Boxes(LoginRequiredMixin, ListView):
             return diagram.create_diagram()
         elif 'run_topology' in request.POST:
             return diagram.create_topology()
-    #def post(self, *args, **kwargs):
-    #    if self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            #new_box = Box.objects.filter(browserupdate=True)
-            #new_service = BoxService.objects.filter(browserupdate=True)
-            #new_service = BoxService.objects.filter(Q(new=True) | Q(updated=True))
-            #if new_box or new_service:
-                #BoxService.objects.all().update(new=False, updated=False)
-    #        return HttpResponse(status=200)
-            #else:
-            #    return HttpResponse(status=400)
+        elif 'run_hostlist' in request.POST:
+            search_input = self.request.GET.get('search') or ''
+            context_boxes = None
+            if search_input:
+                if 'port=' in search_input:
+                    port_string=search_input.split("port=",1)[1]
+                    port_int=int(port_string.strip())
+                    context_boxes = Box.objects.filter(boxservice__port__exact=port_int)
+                else:
+                    context_boxes = Box.objects.filter(Q(ip__icontains=search_input) | Q(hostname__icontains=search_input)) 
+            else:
+                context_boxes = Box.objects.all()
+            return diagram.create_hostlist(context_boxes)
 class BoxDetail(LoginRequiredMixin, DetailView):
     model = Box
     context_object_name = 'box'
     template_name='base/box.html'
+
     '''
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

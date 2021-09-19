@@ -17,12 +17,12 @@ id,component,refs,fill,stroke,shape,type,image,width,height,font,fontSize,parent
 info324,10.10.10.5,box324,#60a917,,,swimlane,,220,80,#FFFFFF,14,,info324
 text324,,,,,,text,,220,80,#000000,14,info324,text324
 info322,windowstest,box322,#60a917,,,swimlane,,220,80,#FFFFFF,14,,info322
-text322,Port 45 - wateva<br>,,,,,text,,220,80,#000000,14,info322,text322
+text322,Port 22 - ssh<br>Port 45 - wateva<br>,,,,,text,,220,80,#000000,14,info322,text322
 info323,host232d,box323,#60a917,,,swimlane,,220,80,#FFFFFF,14,,info323
 text323,Port 555 - ogya<br>,,,,,text,,220,80,#000000,14,info323,text323
-info321,scanme.nmap.org,box321,#60a917,,,swimlane,,220,80,#FFFFFF,14,,info321
-text321,Port 22 - ssh<br>Port 80 - http<br>Port 9929 - nping-echo<br>Port 31337 - tcpwrapped<br>,,,,,text,,220,80,#000000,14,info321,text321
+info326,scanme.nmap.org,box326,#60a917,,,swimlane,,220,80,#FFFFFF,14,,info326
+text326,Port 22 - ssh<br>Port 80 - http<br>Port 9929 - nping-echo<br>Port 31337 - tcpwrapped<br>,,,,,text,,220,80,#000000,14,info326,text326
 box322,,,,,,image,img/lib/mscae/VirtualMachineWindows.svg,90,80,,,,box322
 box323,,,,,,image,img/lib/mscae/VirtualMachineWindows.svg,90,80,,,,box323
-box321,,,,,,image,img/lib/mscae/VM_Linux.svg,90,80,,,,box321
+box326,,,,,,image,img/lib/mscae/VM_Linux.svg,90,80,,,,box326
 box324,,,,,,image,,90,80,,,,box324

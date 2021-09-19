@@ -6,5 +6,3 @@ soupsieve>1.2
 lxml == 4.6.3
 requests >= 2.4.2
 datetime
-json
-csv

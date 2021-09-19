@@ -6,7 +6,7 @@ from base.modules.notifications import Notification
 def handle_uploaded_box(f):
     #add validation
     #update already existing boxes
-    n = Notification()
+    #n = Notification()
     try:
         soup = BeautifulSoup(f, "xml")
     except Exception as e:
@@ -44,12 +44,12 @@ def handle_uploaded_box(f):
             defaults={'hostname':host_name, 'state':host_state, 'os':os_fam})
             if(created):
                 #print("{} was created".format(retrieved_box))
-                n.append_notification(retrieved_box, None, None, True, None)
+                #n.append_notification(retrieved_box, None, None, True, None)
                 retrieved_box.new = True
                 retrieved_box.save()
-            else:
-                if retrieved_box.updated is True:
-                    n.append_notification(retrieved_box, None, True, None, None)
+            #else:
+                #if retrieved_box.updated is True:
+                    #n.append_notification(retrieved_box, None, True, None, None)
 
             #print(retrieved_box)
             #print(created)
@@ -72,7 +72,7 @@ def handle_uploaded_box(f):
                 ports = None
   
             if ports:
-                n.append_block()
+                #n.append_block()
                 for p in ports:
                     try:
                         service_port = p.get('portid')
@@ -114,20 +114,20 @@ def handle_uploaded_box(f):
                             #else:
                             #    bs = BoxService (port=service_port, protocol=service_protocol, state=service_state, name=service_name, version=service_pv_combined, script=script_output, new=True, cBox=d)
                             #    bs.save()
-                    new_service, service_created = BoxService.objects.update_or_create(port=service_port, protocol=service_protocol, defaults={'state':service_state, 'name':service_name, 'version':service_pv_combined, 'script':script_output, 'cBox':retrieved_box})
+                    new_service, service_created = BoxService.objects.update_or_create(cBox=retrieved_box, port=service_port, protocol=service_protocol, defaults={'state':service_state, 'name':service_name, 'version':service_pv_combined, 'script':script_output})
                     if(service_created):
                         #print("{} was created".format(new_service))
-                        n.append_notification(retrieved_box, new_service, None, True, None)
+                        #n.append_notification(retrieved_box, new_service, None, True, None)
                         new_service.new = True
                         new_service.save()
-                    else:
-                        if new_service.updated is not None:
-                            n.append_notification(retrieved_box, new_service, True, None, new_service.updated)
+                    #else:
+                        #if new_service.updated is not None:
+                            #n.append_notification(retrieved_box, new_service, True, None, new_service.updated)
                     #else:
                     #    bs = BoxService(port=service_port, protocol=service_protocol, state=service_state, name=service_name, version=service_pv_combined, script=script_output, new=True, cBox=retrieved_box)
                     #    bs.save()
-        n.append_block()
-        n.send_notification()
+        #n.append_block()
+        #n.send_notification()
         Box.objects.all().update(new=False, updated=False)
         BoxService.objects.all().update(new=False, updated=None)
     return

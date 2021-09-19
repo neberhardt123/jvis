@@ -24,8 +24,8 @@ if __name__ == '__main__':
     initial_scan = "nmap -n -sn -PU -PY80,23,443,21,22,25,3389,110,445,139 -PS80,23,443,21,22,25,3389,110,445,139,143,53,135,3306,8080,1723,111,995,993,5900,1025,587,8888 {} -oG - | awk '/Up$/{{print $2}}' > hosts_simple.txt".format(args.victim_addr)
     initial_scan_v = "nmap -n -sn -PU -PS --top-ports 1000 {} -oG - | awk '/Up$/{{print $2}}' > hosts_detailed.txt".format(args.victim_addr)
 
-    first_scan = "nmap -n -T5 -iL hosts_simple.txt -oX temp.xml {}".format(args.victim_addr)
-    second_scan = "nmap -T4 -O --osscan-limit -iL hosts_detailed.txt -Pn -sSVC --top-ports 2000 -oX temp.xml {}".format(args.victim_addr)
+    first_scan = "nmap -n -T5 -iL hosts_simple.txt -oX temp1.xml {}".format(args.victim_addr)
+    second_scan = "nmap -T4 -O --osscan-limit -iL hosts_detailed.txt -Pn -sSVC --top-ports 2000 -oX temp2.xml {}".format(args.victim_addr)
 
     #fast host discovery
 
@@ -36,20 +36,19 @@ if __name__ == '__main__':
     os.system(initial_scan)
 
     try:
-        os.remove('temp.xml')
+        os.remove('temp1.xml')
     except:
         pass
     os.system(first_scan)
 
     try:
-        with open('temp.xml', 'rb') as f:
+        with open('temp1.xml', 'rb') as f:
             r = requests.post('{}:{}/upload/'.format(args.target_ip,args.target_port), files={'file': f})
             f.close()
     except Exception as e:
         print(e)
 
     #slower host discovery
-    
     try:
         os.remove('hosts_detailed.txt')
     except:
@@ -58,12 +57,12 @@ if __name__ == '__main__':
 
     #while True:
     try:
-        os.remove('temp.xml')
+        os.remove('temp2.xml')
     except:
         pass
     os.system(second_scan)
     try:
-        with open('temp.xml', 'rb') as f:
+        with open('temp2.xml', 'rb') as f:
             r = requests.post('{}:{}/upload/'.format(args.target_ip,args.target_port), files={'file': f})
             f.close()
     except Exception as e:
