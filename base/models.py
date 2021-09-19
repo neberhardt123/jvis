@@ -19,6 +19,8 @@ class Box(models.Model):
     comments = models.TextField(null=True, blank=True)
     active = models.BooleanField(default=False)
     pwned = models.BooleanField(default=False)
+    unrelated = models.BooleanField(default=False)
+    comeback = models.BooleanField("Come back to this box", default=False)
     os = models.CharField(max_length=200, null=True, blank=True)
     new = models.BooleanField(default=True)
     updated = models.BooleanField(default=False)

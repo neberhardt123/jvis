@@ -28,7 +28,32 @@
     </div>
 </div>
 
-
+<style>
+dl dt{
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+}
+dl dd{
+    display: inline-block;
+    margin: 0px 10px;
+    padding-bottom: 0;
+    vertical-align: middle;
+}
+dl dt.dtactive{
+    background: #ffb339;
+}
+dl dt.dtpwned{
+    background: #4bbb4b;
+}
+dl dt.dtunrelated{
+    background: #ff7b7b ;
+}
+dl dt.dtcome{
+    background: #7ea0ff;
+}
+</style>
 
 <hr>
 <div class="container">
@@ -41,6 +66,16 @@
           <!-- BEGIN RESULT -->
           <div class="col-md-9">
             <h2 id="counter">JVIS Overview (Machines: {{count}})</h2>
+            <dl>
+                <dt class="dtactive"></dt>
+                <dd>Active</dd>
+                <dt class="dtpwned"></dt>
+                <dd>Pwned</dd>
+                <dt class="dtunrelated"></dt>
+                <dd>Unrelated</dd>
+                <dt class="dtcome"></dt>
+                <dd>Come back</dd>
+            </dl>
             <hr>
 
             <div class="input-group">
@@ -118,7 +153,15 @@
             <div id="accordion">
                 {% for box in boxes%}
                 <style type="text/css">
-                {% if box.pwned %}
+                {% if box.unrelated %}
+                #heading{{box.id}} {
+                    background:#ff7b7b !important;
+                }
+                {% elif box.comeback %}
+                #heading{{box.id}} {
+                    background:#7ea0ff !important;
+                }
+                {% elif box.pwned %}
                 #heading{{box.id}} {
                     background:#4bbb4b; !important;
                 }
@@ -126,13 +169,12 @@
                 #heading{{box.id}} {
                     background:#ffb339 !important;
                 }
+
                 {% else %}
                 #heading{{box.id}} {
                     background:rgb(230, 230, 230)  !important;
                 }
-                #assignee {
-                    color:black !important;
-                }
+
                 {%endif%}
                 </style>
                 <div class="card">
@@ -144,7 +186,7 @@
                             <h5 style="text-shadow:none;text-align:center;">{{box.hostname}} | {{box.ip}}</h5>
                         </div>
                         <div class="col-md-2" style="margin:auto;">
-                            <h6 class="float-right" style="color:black;">Assigned to: <b id="assignee" style="color:white; font-size:14; ">{{box.user}}</b></h6>
+                            <h6 class="float-right" style="color:black;">Assigned to: <b id="assignee" style="font-size:14; ">{{box.user}}</b></h6>
                         </div>
                         <div class="col-md-1" style="margin:auto;">
                             <a class="abut float-right" href="{% url 'box-update' box.id %}"><button type="button" class="btn btn-info" onClick="event.stopPropagation();">Edit</button></a>

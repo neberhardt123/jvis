@@ -122,7 +122,7 @@ class BoxCreate(LoginRequiredMixin, CreateView):
 
 class BoxUpdate(LoginRequiredMixin, UpdateView):
     model = Box
-    fields = ['user', 'hostname', 'os', 'cidr', 'comments', 'active', 'pwned']
+    fields = ['user', 'hostname', 'os', 'cidr', 'comments', 'active', 'pwned','comeback','unrelated']
     context_object_name='box_form'
     success_url = reverse_lazy('boxes')
 
@@ -134,7 +134,7 @@ class BoxUpload(View):
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             handle_uploaded_box(request.FILES['file'])
-        #handle_uploaded_box(request.POST)
+            #handle_uploaded_box(request.POST)
             return redirect('boxes')
         else:
             handle_uploaded_box(request.FILES)

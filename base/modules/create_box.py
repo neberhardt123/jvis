@@ -51,20 +51,6 @@ def handle_uploaded_box(f):
                 #if retrieved_box.updated is True:
                     #n.append_notification(retrieved_box, None, True, None, None)
 
-            #print(retrieved_box)
-            #print(created)
-
-            #CHANGE THIS
-            #if dupe:
-            #    for d in dupe:
-            #        for b in d.boxservice_set.all():
-            #            
-            #        d.boxservice_set.all().delete()
-            #        d.save()
-            #    dupe.update(ip=address, hostname=host_name, state=host_state, os=os_fam, new=True)
-            #else:
-            #    b = Box(ip=address, hostname=host_name, state=host_state, os=os_fam, new=True)
-            #    b.save()
 
             try:
                 ports = host.find_all('port')
@@ -107,13 +93,6 @@ def handle_uploaded_box(f):
                         service_pv_combined = service_version + service_product
                     else:
                         service_pv_combined = None
-                            #get all bs for box?
-                            #if d.boxservice_set.all().port == service_port:
-                            #    print("DUPED SERVICE" + service_port)
-                            #    continue
-                            #else:
-                            #    bs = BoxService (port=service_port, protocol=service_protocol, state=service_state, name=service_name, version=service_pv_combined, script=script_output, new=True, cBox=d)
-                            #    bs.save()
                     new_service, service_created = BoxService.objects.update_or_create(cBox=retrieved_box, port=service_port, protocol=service_protocol, defaults={'state':service_state, 'name':service_name, 'version':service_pv_combined, 'script':script_output})
                     if(service_created):
                         #print("{} was created".format(new_service))
@@ -131,6 +110,3 @@ def handle_uploaded_box(f):
         Box.objects.all().update(new=False, updated=False)
         BoxService.objects.all().update(new=False, updated=None)
     return
-
-    #b = Box(ip="192.168.5.140", comments="test box!")
-    #b.save()
