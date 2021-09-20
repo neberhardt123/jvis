@@ -9,6 +9,8 @@ from django.urls import reverse_lazy
 import asyncio
 import json
 import os
+import functools
+import operator
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import UserCreationForm
@@ -67,15 +69,18 @@ class Boxes(LoginRequiredMixin, ListView):
         if search_input:
             if 'port=' in search_input:
                 port_string=search_input.split("port=",1)[1]
-                port_int=int(port_string.strip())
-                #ports=port_string.split(",")
-                ##for port in ports:
-                #    port = port.strip()
-                #    port = int(port)
-                #    print(type(port))
-                #for p in ports:
-                #    print(p.strip())
-                context['boxes'] = Box.objects.filter(boxservice__port__exact=port_int)
+                ports=port_string.split(",")
+                if self.request.GET.get('exactmatch'):
+                    and_filter = "context['boxes'] = Box.objects"
+                    for port in ports:
+                        port = int(port.strip())
+                        and_filter += ".filter(boxservice__port={})".format(port)
+                    exec(and_filter)
+                else:
+                    for port in ports:
+                        port = int(port.strip())       
+                    port_search = (Q(boxservice__port=po) for po in ports)
+                    context['boxes'] = Box.objects.filter(functools.reduce(operator.or_, port_search)).distinct()
                 context['search_input'] = search_input
             else:
                 context['boxes'] = context['boxes'].filter(Q(ip__icontains=search_input) | Q(hostname__icontains=search_input)) 
@@ -84,18 +89,31 @@ class Boxes(LoginRequiredMixin, ListView):
         return context
 
     def post(self, request, *args, **kwargs):
+        context_boxes = None
         if 'run_diagram' in request.POST:
             return diagram.create_diagram()
         elif 'run_topology' in request.POST:
             return diagram.create_topology()
         elif 'run_hostlist' in request.POST:
             search_input = self.request.GET.get('search') or ''
-            context_boxes = None
             if search_input:
                 if 'port=' in search_input:
+
                     port_string=search_input.split("port=",1)[1]
-                    port_int=int(port_string.strip())
-                    context_boxes = Box.objects.filter(boxservice__port__exact=port_int)
+                    ports=port_string.split(",")
+                    if self.request.GET.get('exactmatch'):
+                        and_filter = "context_boxes = Box.objects"
+                        for port in ports:
+                            port = int(port.strip())
+                            and_filter += ".filter(boxservice__port={})".format(port)
+                        ldic = locals()
+                        exec(and_filter, globals(), ldic)
+                        context_boxes = ldic["context_boxes"]
+                    else:
+                        for port in ports:
+                            port = int(port.strip())       
+                        port_search = (Q(boxservice__port=po) for po in ports)
+                        context_boxes= Box.objects.filter(functools.reduce(operator.or_, port_search)).distinct()
                 else:
                     context_boxes = Box.objects.filter(Q(ip__icontains=search_input) | Q(hostname__icontains=search_input)) 
             else:
@@ -105,14 +123,6 @@ class BoxDetail(LoginRequiredMixin, DetailView):
     model = Box
     context_object_name = 'box'
     template_name='base/box.html'
-
-    '''
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['service'] = BoxService.objects.filter(cBox='45.33.32.156')
-        return context
-    '''
-
 
 class BoxCreate(LoginRequiredMixin, CreateView):
     model = Box
@@ -125,7 +135,13 @@ class BoxUpdate(LoginRequiredMixin, UpdateView):
     fields = ['user', 'hostname', 'os', 'cidr', 'comments', 'active', 'pwned','comeback','unrelated']
     context_object_name='box_form'
     success_url = reverse_lazy('boxes')
+    context_object_name = 'boxes'
 
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['ip'] = context['boxes'].ip
+        return context
 
 
 @method_decorator(csrf_exempt, name="dispatch")

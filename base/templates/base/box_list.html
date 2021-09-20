@@ -53,6 +53,10 @@ dl dt.dtunrelated{
 dl dt.dtcome{
     background: #7ea0ff;
 }
+
+dl dt.dtinactive {
+    background: rgb(230, 230, 230);
+}
 </style>
 
 <hr>
@@ -67,6 +71,8 @@ dl dt.dtcome{
           <div class="col-md-9">
             <h2 id="counter">JVIS Overview (Machines: {{count}})</h2>
             <dl>
+                <dt class="dtinactive"></dt>
+                <dd>Inactive</dd>
                 <dt class="dtactive"></dt>
                 <dd>Active</dd>
                 <dt class="dtpwned"></dt>
@@ -80,10 +86,14 @@ dl dt.dtcome{
 
             <div class="input-group">
                 <form method="GET" class="input-group mb-3">
-                    <input type="text" class="form-control" value="{{search_input}}" method="GET" name="search" placeholder="Search by IP or Hostname">
+                    <input type="text" class="form-control" value="{{search_input}}" method="GET" name="search" placeholder="Search by IP, Hostname or port">
                     <span class="input-group-btn">
                         <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
                     </span>
+                    <div style="margin:auto;padding-left:20px;padding-right:10px;font-size:18px;">
+                        <label for="exactmatch">Exact Match?</label>
+                        <input type="checkbox" id="exactmatch" name="exactmatch" value="exactmatch">
+                    </div>
                 </form>
             </div>
             <!-- END SEARCH INPUT -->

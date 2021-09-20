@@ -108,8 +108,8 @@ input[type=text]:placeholder {
 
 <div class="wrapper fadeInDown zero-raduis">
   	  <div id="formContent">
-        <h2>Box Form</h2>
-        <a href="{% url 'boxes' %}">Go Back</a>
+        <a href="{% url 'boxes' %}" class="float-left">Go Back</a><br>
+        <h2>Edit {{ip}}</h2>
         <form method="POST" action="">
             {% csrf_token %}
             {{form.as_p}}
