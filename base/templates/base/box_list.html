@@ -93,6 +93,15 @@ dl dt.dtinactive {
                     <div style="margin:auto;padding-left:20px;padding-right:10px;font-size:18px;">
                         <label for="exactmatch">Exact Match?</label>
                         <input type="checkbox" id="exactmatch" name="exactmatch" value="exactmatch">
+                        <script>
+                        $('#exactmatch').click(function(e) {
+                            if(e.target.checked) {
+                                localStorage.checked = true;
+                            } else {
+                                localStorage.checked = false;
+                            }
+                        })
+                        </script>
                     </div>
                 </form>
             </div>
@@ -145,6 +154,7 @@ dl dt.dtinactive {
                 }
 
                 $(document).ready(function() {
+                    document.querySelector('#exactmatch').checked = localStorage.checked
                     setStorage();
                     getStorage();
                     setIcons();
@@ -193,7 +203,7 @@ dl dt.dtinactive {
                                 <i class="fa fa-plus"></i>
                         </div>
                         <div class="col" style="margin:auto;">
-                            <h5 style="text-shadow:none;text-align:center;">{{box.hostname}} | {{box.ip}}</h5>
+                            <h5 style="text-shadow:none;text-align:center;color:#4b4a4a;">{{box.hostname}} | {{box.ip}}</h5>
                         </div>
                         <div class="col-md-2" style="margin:auto;">
                             <h6 class="float-right" style="color:black;">Assigned to: <b id="assignee" style="font-size:14; ">{{box.user}}</b></h6>

@@ -83,7 +83,10 @@ class Boxes(LoginRequiredMixin, ListView):
                     context['boxes'] = Box.objects.filter(functools.reduce(operator.or_, port_search)).distinct()
                 context['search_input'] = search_input
             else:
-                context['boxes'] = context['boxes'].filter(Q(ip__icontains=search_input) | Q(hostname__icontains=search_input)) 
+                if self.request.GET.get('exactmatch'):
+                    context['boxes'] = context['boxes'].filter(Q(ip__iexact=search_input) | Q(hostname__iexact=search_input))
+                else:
+                    context['boxes'] = context['boxes'].filter(Q(ip__icontains=search_input) | Q(hostname__icontains=search_input)) 
                 context['search_input'] = search_input
         context['count'] = context['boxes'].count()
         return context
@@ -115,7 +118,10 @@ class Boxes(LoginRequiredMixin, ListView):
                         port_search = (Q(boxservice__port=po) for po in ports)
                         context_boxes= Box.objects.filter(functools.reduce(operator.or_, port_search)).distinct()
                 else:
-                    context_boxes = Box.objects.filter(Q(ip__icontains=search_input) | Q(hostname__icontains=search_input)) 
+                    if self.request.GET.get('exactmatch'):
+                        context_boxes = Box.objects.filter(Q(ip__iexact=search_input) | Q(hostname__iexact=search_input))
+                    else:
+                        context_boxes = Box.objects.filter(Q(ip__icontains=search_input) | Q(hostname__icontains=search_input)) 
             else:
                 context_boxes = Box.objects.all()
             return diagram.create_hostlist(context_boxes)
