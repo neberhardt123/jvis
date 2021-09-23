@@ -25,7 +25,7 @@ if __name__ == '__main__':
     initial_scan_v = "nmap -n -sn -PU -PS --top-ports 1000 {} -oG - | awk '/Up$/{{print $2}}' > hosts_detailed.txt".format(args.victim_addr)
 
     first_scan = "nmap -n -T5 -iL hosts_simple.txt -oX temp1.xml {}".format(args.victim_addr)
-    second_scan = "nmap -T4 -O --osscan-limit -iL hosts_detailed.txt -Pn -sSVC --top-ports 2000 -oX temp2.xml {}".format(args.victim_addr)
+    second_scan = "nmap -T4 -iL hosts_detailed.txt -Pn -sSVC --top-ports 2000 -oX temp2.xml {}".format(args.victim_addr)
 
     #fast host discovery
 

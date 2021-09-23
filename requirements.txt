@@ -1,8 +1,8 @@
 django == 3.2
 django-extensions
-django-webpush
 beautifulsoup4 == 4.9.3
 soupsieve>1.2
 lxml == 4.6.3
 requests >= 2.4.2
 datetime
+numpy
