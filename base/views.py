@@ -65,18 +65,21 @@ class Boxes(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['chk'] = ""
         search_input = self.request.GET.get('search') or ''
         if search_input:
             if 'port=' in search_input:
                 port_string=search_input.split("port=",1)[1]
                 ports=port_string.split(",")
                 if self.request.GET.get('exactmatch'):
+                    context['chk'] = "checked"
                     and_filter = "context['boxes'] = Box.objects"
                     for port in ports:
                         port = int(port.strip())
                         and_filter += ".filter(boxservice__port={})".format(port)
                     exec(and_filter)
                 else:
+                    context['chk'] = ""
                     for port in ports:
                         port = int(port.strip())       
                     port_search = (Q(boxservice__port=po) for po in ports)
@@ -84,8 +87,10 @@ class Boxes(LoginRequiredMixin, ListView):
                 context['search_input'] = search_input
             else:
                 if self.request.GET.get('exactmatch'):
+                    context['chk'] = "checked"
                     context['boxes'] = context['boxes'].filter(Q(ip__iexact=search_input) | Q(hostname__iexact=search_input))
                 else:
+                    context['chk'] = ""
                     context['boxes'] = context['boxes'].filter(Q(ip__icontains=search_input) | Q(hostname__icontains=search_input)) 
                 context['search_input'] = search_input
         context['count'] = context['boxes'].count()

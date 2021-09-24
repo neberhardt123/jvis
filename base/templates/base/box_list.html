@@ -69,7 +69,7 @@ dl dt.dtinactive {
         <div class="row">
           <!-- BEGIN RESULT -->
           <div class="col-md-9">
-            <h2 id="counter">JVIS Overview (Machines: {{count}})</h2>
+            <h2 id="counter"><a style="text-decoration:none;color:#666666;" href="{% url 'boxes' %}">JVIS Overview (Machines: {{count}})</a></h2>
             <dl>
                 <dt class="dtinactive"></dt>
                 <dd>Inactive</dd>
@@ -92,15 +92,15 @@ dl dt.dtinactive {
                     </span>
                     <div style="margin:auto;padding-left:20px;padding-right:10px;font-size:18px;">
                         <label for="exactmatch">Exact Match?</label>
-                        <input type="checkbox" id="exactmatch" name="exactmatch" value="exactmatch">
+                        <input type="checkbox" id="exactmatch" name="exactmatch" value="exactmatch" {{chk}}>
                         <script>
-                        $('#exactmatch').click(function(e) {
-                            if(e.target.checked) {
-                                localStorage.checked = true;
-                            } else {
-                                localStorage.checked = false;
-                            }
-                        })
+                        //$('#exactmatch').click(function(e) {
+                        //    if(e.target.checked) {
+                        //        localStorage.setItem("chkd", true);
+                        //    } else {
+                        //        localStorage.setItem("chkd", false);
+                        //    }
+                        //})
                         </script>
                     </div>
                 </form>
@@ -154,7 +154,7 @@ dl dt.dtinactive {
                 }
 
                 $(document).ready(function() {
-                    document.querySelector('#exactmatch').checked = localStorage.checked
+                    //$('#exactmatch').prop('checked', localStorage.getItem('chkd'));
                     setStorage();
                     getStorage();
                     setIcons();
