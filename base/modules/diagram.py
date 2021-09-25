@@ -8,9 +8,9 @@ from django.db.models import Q
 
 def create_diagram():
     boxes = Box.objects.all()
-    windows_boxes = Box.objects.filter(Q(os="Windows") | Q(os="windows"))
-    linux_boxes = Box.objects.filter(Q(os="Linux") | Q(os="linux"))
-    other_boxes = Box.objects.filter(~(Q(os="Windows") | Q(os="windows")) & ~(Q(os="Linux") | Q(os="linux")))
+    windows_boxes = Box.objects.filter(os__iexact="windows")
+    linux_boxes = Box.objects.filter(os__iexact="linux")
+    other_boxes = Box.objects.filter(~Q(os__iexact="windows") & ~(Q(os__iexact="linux")))
     header = ['id', 'component', 'refs','fill', 'stroke', 'shape', 'type', 'image', 'width', 'height', 'font', 'fontSize', 'parent','identity']
     data = []
 

@@ -14,18 +14,3 @@
 # edgespacing: 40 
 # layout: horizontalflow 
 id,component,refs,fill,stroke,shape,type,image,width,height,font,fontSize,parent,identity
-info324,yo,box324,#60a917,,,swimlane,,220,80,#FFFFFF,14,,info324
-text324,,,,,,text,,220,80,#000000,14,info324,text324
-info330,jbricks host,box330,#60a917,,,swimlane,,220,80,#FFFFFF,14,,info330
-text330,,,,,,text,,220,80,#000000,14,info330,text330
-info329,scanme.nmap.org,box329,#60a917,,,swimlane,,220,80,#FFFFFF,14,,info329
-text329,Port 22 - ssh<br>Port 80 - http<br>Port 9929 - nping-echo<br>Port 31337 - tcpwrapped<br>,,,,,text,,220,80,#000000,14,info329,text329
-info322,windowstest,box322,#60a917,,,swimlane,,220,80,#FFFFFF,14,,info322
-text322,Port 22 - ssh<br>Port 45 - wateva<br>,,,,,text,,220,80,#000000,14,info322,text322
-info323,host232d,box323,#60a917,,,swimlane,,220,80,#FFFFFF,14,,info323
-text323,Port 555 - ogya<br>,,,,,text,,220,80,#000000,14,info323,text323
-box330,,,,,,image,img/lib/mscae/VirtualMachineWindows.svg,90,80,,,,box330
-box322,,,,,,image,img/lib/mscae/VirtualMachineWindows.svg,90,80,,,,box322
-box323,,,,,,image,img/lib/mscae/VirtualMachineWindows.svg,90,80,,,,box323
-box324,,,,,,image,img/lib/mscae/VM_Linux.svg,90,80,,,,box324
-box329,,,,,,image,img/lib/mscae/VM_Linux.svg,90,80,,,,box329

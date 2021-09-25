@@ -1,7 +1,7 @@
 web:
   build: .
   environment:
-    MYENV: EXAMPLE
+    MYENV: JVIS
   volumes:
     - .:/code
 web_migrate:

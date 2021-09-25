@@ -214,9 +214,8 @@ dl dt.dtinactive {
                     </div>
                     <div id="collapse{{box.id}}" class="collapse" aria-labelledby="heading{{box.id}}" data-parent="#accordion">
                         <div class="card-body table-responsive">
-                            {% if box.hostname %}
                             <h5>Host: <b>{{box.hostname}}</b></h5>
-                            {% endif %}
+                            <h5>State: <b>{{box.state}}</b></h5>
                             <h5>IP: <b>{{box.ip}}</b></h5>
                             <h5>OS: <b>{{box.os}}</b></h5>
                             <h5>CIDR: <b>{{box.cidr}}</b></h5>
