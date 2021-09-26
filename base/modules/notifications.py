@@ -6,7 +6,7 @@ import datetime
 class Notification:
     def __init__(self):
         self.message = ""
-        self.webhookurl = "https://discordapp.com/api/webhooks/886055588755292191/sbTYIAqg0pyJ0GLXrhr50g3OhsDO8EMjBDX7K8IojXg7IvxZKorIKLk8CbjAEZeE-zFX"
+        self.webhookurl = ""
 
     #TODOOOO
     def parse_ini():

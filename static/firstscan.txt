@@ -1,0 +1,10 @@
+Starting Nmap 7.91 ( https://nmap.org ) at 2021-09-26 18:17 EDT
+Nmap scan report for 45.33.32.156
+Host is up (0.015s latency).
+Not shown: 997 filtered ports
+PORT     STATE SERVICE
+22/tcp   open  ssh
+80/tcp   open  http
+9929/tcp open  nping-echo
+
+Nmap done: 1 IP address (1 host up) scanned in 8.17 seconds
