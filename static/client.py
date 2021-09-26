@@ -48,6 +48,16 @@ def main():
     first_scan = "nmap -n -T5 -iL hosts_simple.txt -oX temp1.xml {}".format(args.victim_addr)
     second_scan = "nmap -T4 -iL hosts_detailed.txt -Pn -sSVC --top-ports 2000 -oX temp2.xml {}".format(args.victim_addr)
 
+    p2 = log.progress("Connecting to JVIS server")
+    try:
+        request = requests.get(target_server, timeout=5)
+        p2.success(Color.GREEN + "✓" + Color.END)
+    except (requests.ConnectionError, requests.Timeout) as exception:
+        p2.failure(Color.RED + "✘" + Color.END)
+        print(Color.RED + "\nCould not connect to " + target_server + "\n")
+        exit(1)
+
+
     #fast host discovery
     p1 = log.progress("Obtaining host list")
     #p1.status("test" + Color.END)
@@ -73,14 +83,7 @@ def main():
         pass
     
 
-    p2 = log.progress("Connecting to JVIS server")
-    try:
-        request = requests.get(target_server, timeout=5)
-        p2.success(Color.GREEN + "✓" + Color.END)
-    except (requests.ConnectionError, requests.Timeout) as exception:
-        p2.failure(Color.RED + "✘" + Color.END)
-        print(Color.RED + "\nCould not connect to " + target_server + "\n")
-        exit(1)
+
 
     p3 = log.progress("Performing light-weight scan on " + args.victim_addr)
     try:
