@@ -86,7 +86,7 @@ class Boxes(LoginRequiredMixin, ListView):
                     context['boxes'] = Box.objects.filter(functools.reduce(operator.or_, port_search)).distinct()
             elif 'script=' in search_input:
                 script_string=search_input.split("script=",1)[1]
-                context['boxes'] = Box.objects.filter(boxservice__script__icontains=script_string)
+                context['boxes'] = Box.objects.filter(boxservice__script__icontains=script_string).distinct()
                 if self.request.GET.get('exactmatch'):
                     context['chk'] = "checked"
                 else:
@@ -95,17 +95,25 @@ class Boxes(LoginRequiredMixin, ListView):
                 version_string=search_input.split("version=",1)[1]
                 if self.request.GET.get('exactmatch'):
                     context['chk'] = "checked"
-                    context['boxes'] = Box.objects.filter(boxservice__version__iexact=version_string)
+                    context['boxes'] = Box.objects.filter(boxservice__version__iexact=version_string).distinct()
                 else:
                     context['chk'] = ""
-                    context['boxes'] = Box.objects.filter(boxservice__version__icontains=version_string)
+                    context['boxes'] = Box.objects.filter(boxservice__version__icontains=version_string).distinct()
+            elif 'name=' in search_input:
+                name_string = search_input.split("name=",1)[1]
+                if self.request.GET.get('exactmatch'):
+                    context['chk'] = "checked"
+                    context['boxes'] = Box.objects.filter(boxservice__name__iexact=name_string).distinct()
+                else:
+                    context['chk'] = ""
+                    context['boxes'] = Box.objects.filter(boxservice__name__icontains=name_string).distinct()
             else:
                 if self.request.GET.get('exactmatch'):
                     context['chk'] = "checked"
-                    context['boxes'] = context['boxes'].filter(Q(ip__iexact=search_input) | Q(hostname__iexact=search_input))
+                    context['boxes'] = context['boxes'].filter(Q(ip__iexact=search_input) | Q(hostname__iexact=search_input)).distinct()
                 else:
                     context['chk'] = ""
-                    context['boxes'] = context['boxes'].filter(Q(ip__icontains=search_input) | Q(hostname__icontains=search_input)) 
+                    context['boxes'] = context['boxes'].filter(Q(ip__icontains=search_input) | Q(hostname__icontains=search_input)).distinct()
             context['search_input'] = search_input
         context['count'] = context['boxes'].count()
         return context
@@ -138,18 +146,24 @@ class Boxes(LoginRequiredMixin, ListView):
                         context_boxes= Box.objects.filter(functools.reduce(operator.or_, port_search)).distinct()
                 elif 'script=' in search_input:
                     script_string=search_input.split("script=",1)[1]
-                    context_boxes = Box.objects.filter(boxservice__script__icontains=script_string)
+                    context_boxes = Box.objects.filter(boxservice__script__icontains=script_string).distinct()
                 elif 'version=' in search_input:
                     version_string=search_input.split("version=",1)[1]
                     if self.request.GET.get('exactmatch'):
-                        context_boxes = Box.objects.filter(boxservice__version__iexact=version_string)
+                        context_boxes = Box.objects.filter(boxservice__version__iexact=version_string).distinct()
                     else:
-                        context_boxes = Box.objects.filter(boxservice__version__icontains=version_string)
+                        context_boxes = Box.objects.filter(boxservice__version__icontains=version_string).distinct()
+                elif 'name=' in search_input:
+                    name_string = search_input.split("name=",1)[1]
+                    if self.request.GET.get('exactmatch'):
+                        context_boxes = Box.objects.filter(boxservice__name__iexact=name_string).distinct()
+                    else:
+                        context_boxes = Box.objects.filter(boxservice__name__icontains=name_string).distinct()
                 else:
                     if self.request.GET.get('exactmatch'):
-                        context_boxes = Box.objects.filter(Q(ip__iexact=search_input) | Q(hostname__iexact=search_input))
+                        context_boxes = Box.objects.filter(Q(ip__iexact=search_input) | Q(hostname__iexact=search_input)).distinct()
                     else:
-                        context_boxes = Box.objects.filter(Q(ip__icontains=search_input) | Q(hostname__icontains=search_input)) 
+                        context_boxes = Box.objects.filter(Q(ip__icontains=search_input) | Q(hostname__icontains=search_input)).distinct()
             else:
                 context_boxes = Box.objects.all()
             return diagram.create_hostlist(context_boxes)
