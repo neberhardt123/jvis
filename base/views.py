@@ -84,7 +84,6 @@ class Boxes(LoginRequiredMixin, ListView):
                         port = int(port.strip())       
                     port_search = (Q(boxservice__port=po) for po in ports)
                     context['boxes'] = Box.objects.filter(functools.reduce(operator.or_, port_search)).distinct()
-                context['search_input'] = search_input
             elif 'script=' in search_input:
                 script_string=search_input.split("script=",1)[1]
                 context['boxes'] = Box.objects.filter(boxservice__script__icontains=script_string)
@@ -92,6 +91,14 @@ class Boxes(LoginRequiredMixin, ListView):
                     context['chk'] = "checked"
                 else:
                     context['chk'] = ""
+            elif 'version=' in search_input:
+                version_string=search_input.split("version=",1)[1]
+                if self.request.GET.get('exactmatch'):
+                    context['chk'] = "checked"
+                    context['boxes'] = Box.objects.filter(boxservice__version__iexact=version_string)
+                else:
+                    context['chk'] = ""
+                    context['boxes'] = Box.objects.filter(boxservice__version__icontains=version_string)
             else:
                 if self.request.GET.get('exactmatch'):
                     context['chk'] = "checked"
@@ -99,7 +106,7 @@ class Boxes(LoginRequiredMixin, ListView):
                 else:
                     context['chk'] = ""
                     context['boxes'] = context['boxes'].filter(Q(ip__icontains=search_input) | Q(hostname__icontains=search_input)) 
-                context['search_input'] = search_input
+            context['search_input'] = search_input
         context['count'] = context['boxes'].count()
         return context
 
@@ -132,6 +139,12 @@ class Boxes(LoginRequiredMixin, ListView):
                 elif 'script=' in search_input:
                     script_string=search_input.split("script=",1)[1]
                     context_boxes = Box.objects.filter(boxservice__script__icontains=script_string)
+                elif 'version=' in search_input:
+                    version_string=search_input.split("version=",1)[1]
+                    if self.request.GET.get('exactmatch'):
+                        context_boxes = Box.objects.filter(boxservice__version__iexact=version_string)
+                    else:
+                        context_boxes = Box.objects.filter(boxservice__version__icontains=version_string)
                 else:
                     if self.request.GET.get('exactmatch'):
                         context_boxes = Box.objects.filter(Q(ip__iexact=search_input) | Q(hostname__iexact=search_input))
