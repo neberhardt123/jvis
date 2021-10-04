@@ -107,6 +107,14 @@ class Boxes(LoginRequiredMixin, ListView):
                 else:
                     context['chk'] = ""
                     context['boxes'] = Box.objects.filter(boxservice__name__icontains=name_string).distinct()
+            elif 'user=' in search_input:
+                user_string = search_input.split("user=",1)[1]
+                if self.request.GET.get('exactmatch'):
+                    context['chk'] = "checked"
+                    context['boxes'] = Box.objects.filter(user__username__iexact=user_string).distinct()
+                else:
+                    context['chk'] = ""
+                    context['boxes'] = Box.objects.filter(user__username__icontains=user_string).distinct()
             else:
                 if self.request.GET.get('exactmatch'):
                     context['chk'] = "checked"
@@ -159,6 +167,12 @@ class Boxes(LoginRequiredMixin, ListView):
                         context_boxes = Box.objects.filter(boxservice__name__iexact=name_string).distinct()
                     else:
                         context_boxes = Box.objects.filter(boxservice__name__icontains=name_string).distinct()
+                elif 'user=' in search_input:
+                    user_string = search_input.split("user=",1)[1]
+                    if self.request.GET.get('exactmatch'):
+                        context_boxes = Box.objects.filter(user__username__iexact=user_string).distinct()
+                    else:
+                        context_boxes = Box.objects.filter(user__username__icontains=user_string).distinct()
                 else:
                     if self.request.GET.get('exactmatch'):
                         context_boxes = Box.objects.filter(Q(ip__iexact=search_input) | Q(hostname__iexact=search_input)).distinct()
