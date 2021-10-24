@@ -45,7 +45,7 @@ def main():
     target_server = "http://{}:{}".format(args.target_ip,args.target_port)
 
     initial_scan = "nmap -n -sn -PS80,23,443,21,22,25,3389,110,445,139,143,53,135,3306,8080,1723,111,995,993,5900,1025,587,8888 {} -oG - | awk '/Up$/{{print $2}}' > hosts_simple.txt".format(args.victim_addr)
-    initial_scan_v = "nmap -n -sn -PU -PS --top-ports 1000 {} -oG - | awk '/Up$/{{print $2}}' > hosts_detailed.txt".format(args.victim_addr)
+    initial_scan_v = "nmap -n -sn -PS --top-ports 1000 {} -oG - | awk '/Up$/{{print $2}}' > hosts_detailed.txt".format(args.victim_addr)
 
     first_scan = "nmap -n -T5 -iL hosts_simple.txt -oX temp1.xml {} > firstscan.txt".format(args.victim_addr)
     second_scan = "nmap -T4 -iL hosts_detailed.txt -Pn -sSVC --top-ports 2000 -oX temp2.xml {} > secondscan.txt".format(args.victim_addr)
